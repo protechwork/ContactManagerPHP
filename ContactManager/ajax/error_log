@@ -1,0 +1,53 @@
+[17-Jun-2023 09:39:40 UTC] PHP Parse error:  Unclosed '{' on line 20 does not match ')' in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 25
+[17-Jun-2023 11:36:23 UTC] PHP Warning:  Undefined array key "id" in /home1/icsweho2/public_html/ContactManager/ajax/get_company.php on line 5
+[17-Jun-2023 11:36:23 UTC] PHP Warning:  Attempt to read property "num_rows" on bool in /home1/icsweho2/public_html/ContactManager/ajax/get_company.php on line 11
+[17-Jun-2023 11:36:33 UTC] PHP Warning:  Undefined array key "id" in /home1/icsweho2/public_html/ContactManager/ajax/get_company.php on line 5
+[17-Jun-2023 11:36:33 UTC] PHP Warning:  Attempt to read property "num_rows" on bool in /home1/icsweho2/public_html/ContactManager/ajax/get_company.php on line 11
+[17-Jun-2023 11:36:38 UTC] PHP Warning:  Undefined array key "id" in /home1/icsweho2/public_html/ContactManager/ajax/get_company.php on line 5
+[17-Jun-2023 11:36:38 UTC] PHP Warning:  Attempt to read property "num_rows" on bool in /home1/icsweho2/public_html/ContactManager/ajax/get_company.php on line 11
+[17-Jun-2023 11:47:13 UTC] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home1/icsweho2/public_html/ContactManager/ajax/save_company.php:15
+Stack trace:
+#0 {main}
+  thrown in /home1/icsweho2/public_html/ContactManager/ajax/save_company.php on line 15
+[01-Jul-2023 06:59:44 UTC] PHP Warning:  Attempt to read property "num_rows" on bool in /home1/icsweho2/public_html/ContactManager/ajax/user_login.php on line 13
+[03-Jul-2023 04:27:54 UTC] PHP Warning:  Undefined array key "reporting_to" in /home1/icsweho2/public_html/ContactManager/ajax/save_agent.php on line 27
+[03-Jul-2023 04:27:54 UTC] PHP Warning:  foreach() argument must be of type array|object, null given in /home1/icsweho2/public_html/ContactManager/ajax/save_agent.php on line 159
+[03-Jul-2023 05:00:40 UTC] PHP Warning:  Undefined array key "user_name" in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 15
+[03-Jul-2023 05:00:40 UTC] PHP Warning:  Undefined array key "user_pass" in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 16
+[03-Jul-2023 07:13:01 UTC] PHP Warning:  Undefined array key "work_status_id" in /home1/icsweho2/public_html/ContactManager/ajax/get_work_status.php on line 5
+[03-Jul-2023 07:13:01 UTC] PHP Warning:  Attempt to read property "num_rows" on bool in /home1/icsweho2/public_html/ContactManager/ajax/get_work_status.php on line 11
+[03-Jul-2023 07:13:04 UTC] PHP Warning:  Undefined array key "work_status_id" in /home1/icsweho2/public_html/ContactManager/ajax/get_work_status.php on line 5
+[03-Jul-2023 07:13:04 UTC] PHP Warning:  Attempt to read property "num_rows" on bool in /home1/icsweho2/public_html/ContactManager/ajax/get_work_status.php on line 11
+[03-Jul-2023 07:13:06 UTC] PHP Warning:  Undefined array key "work_status_id" in /home1/icsweho2/public_html/ContactManager/ajax/get_work_status.php on line 5
+[03-Jul-2023 07:13:06 UTC] PHP Warning:  Attempt to read property "num_rows" on bool in /home1/icsweho2/public_html/ContactManager/ajax/get_work_status.php on line 11
+[04-Jul-2023 13:14:03 UTC] PHP Warning:  Undefined variable $finacial_status in /home1/icsweho2/public_html/ContactManager/ajax/save_project.php on line 52
+[05-Jul-2023 05:04:28 UTC] PHP Warning:  Undefined variable $finacial_status in /home1/icsweho2/public_html/ContactManager/ajax/save_project.php on line 52
+[05-Jul-2023 05:05:19 UTC] PHP Warning:  Undefined variable $finacial_status in /home1/icsweho2/public_html/ContactManager/ajax/save_project.php on line 52
+[05-Jul-2023 05:08:58 UTC] PHP Warning:  Undefined variable $finacial_status in /home1/icsweho2/public_html/ContactManager/ajax/save_project.php on line 55
+[05-Jul-2023 05:10:52 UTC] PHP Warning:  Undefined array key "work_status_id" in /home1/icsweho2/public_html/ContactManager/ajax/get_project.php on line 5
+[05-Jul-2023 05:10:52 UTC] PHP Warning:  Attempt to read property "num_rows" on bool in /home1/icsweho2/public_html/ContactManager/ajax/get_project.php on line 11
+[05-Jul-2023 05:11:13 UTC] PHP Warning:  Undefined array key "work_status_id" in /home1/icsweho2/public_html/ContactManager/ajax/get_project.php on line 5
+[05-Jul-2023 05:11:13 UTC] PHP Warning:  Attempt to read property "num_rows" on bool in /home1/icsweho2/public_html/ContactManager/ajax/get_project.php on line 11
+[05-Jul-2023 13:10:50 UTC] PHP Warning:  Undefined array key "display_name" in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 12
+[05-Jul-2023 13:10:50 UTC] PHP Warning:  Trying to access array offset on value of type null in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 12
+[05-Jul-2023 13:11:08 UTC] PHP Warning:  Undefined array key "display_name" in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 12
+[05-Jul-2023 13:11:08 UTC] PHP Warning:  Trying to access array offset on value of type null in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 12
+[05-Jul-2023 13:13:46 UTC] PHP Warning:  Undefined array key "display_name" in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 12
+[05-Jul-2023 13:13:46 UTC] PHP Warning:  Trying to access array offset on value of type null in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 12
+[05-Jul-2023 13:28:24 UTC] PHP Warning:  Undefined array key "display_name" in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 12
+[05-Jul-2023 13:28:24 UTC] PHP Warning:  Trying to access array offset on value of type null in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 12
+[05-Jul-2023 13:29:49 UTC] PHP Warning:  Undefined array key "display_name" in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 12
+[05-Jul-2023 13:29:49 UTC] PHP Warning:  Trying to access array offset on value of type null in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 12
+[05-Jul-2023 13:32:33 UTC] PHP Warning:  Undefined array key "display_name" in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 73
+[05-Jul-2023 13:32:33 UTC] PHP Warning:  Trying to access array offset on value of type null in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 73
+[05-Jul-2023 13:34:14 UTC] PHP Warning:  Undefined array key "display_name" in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 73
+[05-Jul-2023 13:34:14 UTC] PHP Warning:  Trying to access array offset on value of type null in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 73
+[05-Jul-2023 13:35:38 UTC] PHP Warning:  Undefined array key "display_name" in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 73
+[05-Jul-2023 13:35:38 UTC] PHP Warning:  Trying to access array offset on value of type null in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 73
+[06-Jul-2023 04:55:04 UTC] PHP Warning:  Undefined variable $newContactID in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 40
+[06-Jul-2023 05:34:32 UTC] PHP Warning:  Undefined variable $newContactID in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 40
+[06-Jul-2023 05:36:37 UTC] PHP Warning:  Undefined variable $newContactID in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 40
+[06-Jul-2023 05:38:42 UTC] PHP Warning:  Undefined variable $newContactID in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 40
+[06-Jul-2023 05:39:13 UTC] PHP Warning:  Undefined array key "display_image" in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 12
+[06-Jul-2023 05:39:13 UTC] PHP Warning:  Trying to access array offset on value of type null in /home1/icsweho2/public_html/ContactManager/ajax/save_contact.php on line 12
+[06-Jul-2023 07:21:31 UTC] PHP Warning:  Undefined array key "reciept_amount" in /home1/icsweho2/public_html/ContactManager/ajax/save_project.php on line 11
