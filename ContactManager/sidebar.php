@@ -173,6 +173,14 @@
               <p>Agent</p>
             </a>
           </li>
+		  
+		  
+		  <li class="nav-item">
+            <a href="ticket.php" class="nav-link">
+              <i class="far fa-user nav-icon"></i>
+              <p>Ticket</p>
+            </a>
+          </li>
           
            <!--
            <li class="nav-item">

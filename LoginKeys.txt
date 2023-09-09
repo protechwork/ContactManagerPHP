@@ -1,0 +1,9 @@
+Cpanel:
+Host:http://111.118.215.65/cpanel
+User:icsweho2
+Pass:@#8007775051#@
+
+FTP Details:
+Host:111.118.215.65
+User:icsweho2
+Pass:@#8007775051#@
