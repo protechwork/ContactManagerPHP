@@ -17,7 +17,8 @@ $status = $_POST['status'];
 
 
 // Check if the data is not blank
-if (!empty($name) && !empty($company_id) && !empty($amount) && !empty($type) && !empty($f_status) && !empty($status) && !empty($receipt_amount) && !empty($pending_amount) )
+//if (!empty($name) && !empty($company_id) && !empty($amount) && !empty($type) && !empty($f_status) && !empty($status) && !empty($receipt_amount) && !empty($pending_amount) )
+if (!empty($name) && !empty($company_id) )
 {
     $workStatusID="0";
     if(!empty($_POST['id']))
@@ -34,7 +35,7 @@ if (!empty($name) && !empty($company_id) && !empty($amount) && !empty($type) && 
     //var_dump($count);die();
     if (intval($count) !=  0)
     {
-        $updateQuery = "UPDATE project SET name='".$name."' , company_id=".$company_id." , amount=".$amount." , receipt_amount=".$receipt_amount.", pending_amount=".$pending_amount." , type=".$type." , finacial_status=".$f_status." , status=".$status." WHERE id  = ".$workStatusID;
+        $updateQuery = "UPDATE project SET name='".$name."' , company_id=".$company_id." , amount='".$amount."' , receipt_amount='".$receipt_amount."', pending_amount='".$pending_amount."' , type='".$type."' , finacial_status='".$f_status."' , status='".$status."' WHERE id  = ".$workStatusID;
         //var_dump($updateQuery);die();
         $mysqli->query($updateQuery);
          $response = array('status' => 'success');
@@ -54,7 +55,7 @@ if (!empty($name) && !empty($company_id) && !empty($amount) && !empty($type) && 
           }
         
            // Insert a new record
-           $insertQuery = "INSERT INTO project (name, company_id, amount, receipt_amount, pending_amount, type, finacial_status, status) VALUES ('$name' , $company_id , $amount, $receipt_amount, $pending_amount , $type , $f_status , $status)";   
+           $insertQuery = "INSERT INTO project (name, company_id, amount, receipt_amount, pending_amount, type, finacial_status, status) VALUES ('$name' , $company_id , '$amount', '$receipt_amount', '$pending_amount' , '$type' , '$f_status' , '$status')";   
            //var_dump($insertQuery);die();
            $mysqli->query($insertQuery);
         

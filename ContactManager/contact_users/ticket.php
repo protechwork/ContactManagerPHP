@@ -1,36 +1,6 @@
 <?php 
 require_once "redirect.php";
-
-  session_start();
-  $user_id = $_SESSION['user_id'];
-  $user_type = $_SESSION['user_type'];
-
-  require_once 'ajax/dbconfig.php';
-  $query = "SELECT * from agent_login WHERE id=".$user_id;
-
-  $result = $mysqli->query($query);
-
-  if ($result->num_rows > 0) {
-      // Loop through each row and output the data in <tbody>       
-      if ($row = $result->fetch_assoc())
-      {                                                           
-          if($row['agent_id'] != null)
-          {
-            $user_id = $row['agent_id'];
-          }
-          else
-          {
-          $user_id = 0;
-          }
-      }
-  } 
-  else 
-  {
-    $user_id = 0;
-  }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,20 +34,13 @@ require_once "redirect.php";
       </div><!-- /.container-fluid -->
     </section>
     
-           
-
-
-
-
-
-
             <!-- Activity Modal -->
 
             <div class="modal fade" id="modal-lg">
                 <div class="modal-dialog modal-lg">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h4 class="modal-title">Ticket Activity: <span id="ticket_no"></span></h4>
+                      <h4 class="modal-title">Ticket Activity</h4>
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
@@ -273,114 +236,6 @@ require_once "redirect.php";
                   </div>
               </div>
 
-              <div class="row">
-                  <div class="col-md-4">
-                        <div class="form-group">
-                          <label>Assigned By</label>
-                          <select class="form-control" id="assigned_by" name="assigned_by" required>
-                              <option value="">Please Select Assigned By</option>
-                              <?php
-                                  require_once 'ajax/dbconfig.php';
-
-                                  $query = "SELECT * FROM agent_master";
-                                  $result = $mysqli->query($query);
-
-                                  // Check if any rows were returned
-                                  if ($result->num_rows > 0) {
-                                      // Loop through each row and output the data in <tbody>
-                                      while ($row = $result->fetch_assoc())
-                                      {                                              
-                                          echo '<option value="'.$row['id'].'">' . $row['name'] . '</option>';
-                                      }
-                                  }
-                                  // Close the database connection
-                                  //$mysqli->close();
-                              ?>                              
-                          </select>
-                      </div>
-                  </div>
-                  
-                  <div class="col-md-4">
-                        <div class="form-group">
-                          <label>Assigned To</label>
-                          
-                          <select class="form-control" id="assigned_to" name="assigned_to" required>
-                              <option value="">Please Select Assigned To</option>
-                              <?php
-                                  require_once 'ajax/dbconfig.php';
-
-
-                                  $query = "SELECT * FROM agent_master";
-                                  
-
-                                  error_log("Current User Type:".$user_type);
-
-                                  if($user_type == 0) //admin
-                                  {
-                                    $query = "SELECT * FROM agent_master";
-                                  }
-                                  else if($user_type == 1) // agent
-                                  {
-                                    //$query = "SELECT * FROM agent_master WHERE id IN (SELECT reporting_to_id FROM agent_reporting_to WHERE agent_id=".$user_id.")";
-                                    $query = "SELECT * FROM agent_master WHERE id IN (SELECT agent_id  FROM agent_reporting_to WHERE reporting_to_id=".$user_id.")";
-                                  }
-                                  else
-                                  {
-                                    $query = "SELECT * FROM agent_master";
-                                  }
-
-                                  error_log("Query To Fetch Data:".$query);
-                                  
-                                  //$query = "SELECT * FROM agent_master";
-                                  $result = $mysqli->query($query);
-
-                                  // Check if any rows were returned
-                                  if ($result->num_rows > 0) {
-                                      // Loop through each row and output the data in <tbody>
-                                      while ($row = $result->fetch_assoc())
-                                      {                                              
-                                          echo '<option value="'.$row['id'].'">' . $row['name'] . '</option>';
-                                      }
-                                  }
-                                  // Close the database connection
-                                  //$mysqli->close();
-                              ?>                              
-                          </select>
-                      </div>
-                  </div>
-
-                  <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="link_status">Work Status</label>
-                            <select class="form-control" id="work_status" name="work_status" required="">
-                                <option value="">Select Work Status</option>
-                                <?php
-                                        // Include the database configuration file
-                                        require_once 'ajax/dbconfig.php';
-                                        $columnList= array();
-
-                                        // Fetch all data from the email_template table
-                                        $query = "SELECT work_status_master.* FROM work_status_master";
-                                        $result = $mysqli->query($query);
-
-                                        // Check if any rows were returned
-                                        if ($result->num_rows > 0)
-                                        {
-                                            // Loop through each row and output the data in <tbody>
-                                            while ($row = $result->fetch_assoc())
-                                            {                                                     
-                                              echo '<option value="' . $row['id'] . '">' . $row['name'] . '</option>';                                                  
-                                            }
-                                        }
-                                  ?>
-                            </select>
-                        </div>
-                    </div>
-
-
-              </div>
-							
-							
 							<div class="row">  
 								<div class="col-md-6">
                                      <div class="form-group">                                        
@@ -388,7 +243,6 @@ require_once "redirect.php";
                                             <label for="image">Attachment (Less Than 5 MB)</label>
                                             <input type="file" name="attachment" id="attachment" accept="image/jpeg" required="">
                                         </div>
-                                        <div id="download_attachment"></div>
                                     </div>
                                 </div>    
                             </div>
@@ -417,13 +271,8 @@ require_once "redirect.php";
             </div>
             <!-- /.modal -->
 
-
-
-
     <!-- Main content -->
     <section class="content">
-
-      <input id="login_user" type="text" hidden value="<?=$user_id?>" />
       <div class="container-fluid">
                 
         <div class="row">
@@ -431,28 +280,23 @@ require_once "redirect.php";
             <div class="card card-<?=$card_color?>">
               <div class="card-header">
                 <h3 class="card-title">Titcket List</h3>
-                <button type="button" class="btn btn-primary add-btn" data-toggle="modal" data-target="#modal-lg" style="float: right;margin: 0;padding: 0;background-color: white;color: black;width: 10%;">Add</button>                
+                <button type="button" class="btn btn-primary add-btn" data-toggle="modal" data-target="#modal-lg" style="float: right;margin: 0;padding: 0;background-color: white;color: black;width: 10%;">Add</button>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
                 <table id="company_table" class="table table-bordered table-striped">
                         <thead>
-                            <tr>                                
-                                <th>Ticket No</th>
-                                <th>Created Date</th>
-                                <th>Company Name-Project</th>
-                                <!--<th>Project Name</th>-->
-                               
+                            <tr>
+                                <th>Sr No</th>
+                                <th>Company Name</th>
+                                <th>Project Name</th>
                                 <th>Ticket Title</th>
-                                <!--<th>Details</th>  -->
-                                
-                                <th>Assign By-Assign To</th>  
-                                
-                                
-                                
+                                <th>Details</th>                                
+                                <th>Created Date</th>
+                                <th>Reported By</th>
                                 <th>Work Status</th> 
-                                <!--<th>Status</th>  -->
-                                <th>Download</th>                             
+                                <th>Status</th>  
+                                <th>attachement</th>                             
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -470,23 +314,20 @@ require_once "redirect.php";
                                 pro.name ProjectName, 
                                 tkt.title Title, 
                                 tkt.details, 
-                                assgnby.name assign_by,
-                                assgnto.name assign_to,
                                 wstatus.name WorkStatus,  
                                 CASE
                                   WHEN tkt.status = 0 THEN 'In-Active'
                                   ELSE 'Active'
-                                END Status,
-                                  DATE_FORMAT(tkt.reported_on, '%d-%m-%Y %h-%i-%s ') ReportedOn, 
-                                  tkt.reported_by ReportedBy, 
-                                  tkt.attachement 
-                                FROM 
-                                  ticket tkt 
-                                  LEFT JOIN companies cmp ON tkt.company_id = cmp.company_id 
-                                  LEFT JOIN project pro ON tkt.project_id = pro.id 
-                                  LEFT JOIN agent_master assgnby ON tkt.assigned_by = assgnby.id
-                                  LEFT JOIN agent_master assgnto ON tkt.assigned_to = assgnto.id
-                                  LEFT JOIN work_status_master wstatus ON tkt.work_status = wstatus.id";
+                              END Status,
+                                tkt.reported_on ReportedOn, 
+                                tkt.reported_by ReportedBy, 
+                                tkt.attachement 
+                              FROM 
+                                ticket tkt 
+                                LEFT JOIN companies cmp ON tkt.company_id = cmp.company_id 
+                                LEFT JOIN project pro ON tkt.project_id = pro.id 
+                                LEFT JOIN work_status_master wstatus ON tkt.work_status = wstatus.id
+                                WHERE tkt.reported_by=".$_SESSION['user_id'];
                                 $result = $mysqli->query($query);
 
                                 // Check if any rows were returned
@@ -494,22 +335,16 @@ require_once "redirect.php";
                                     // Loop through each row and output the data in <tbody>
                                   $index=1;
                                     while ($row = $result->fetch_assoc()) {                                              
-                                        echo '<tr onclick="get_company('.$row['ticket_id'].')">';
-                                        //echo '<td>' . $index . '</td>';  
-                                        echo '<td>' . $row['ticket_id'] . '</td>';   
-                                        echo '<td>' . $row['ReportedOn'] . '</td>';                       
-                                        echo '<td>' . $row['CompanyName'] ."-". $row['ProjectName'] . '</td>';
-                                        //echo '<td>' . $row['ProjectName'] . '</td>';
-                                        
-                                        echo '<td title="'.$row['details'].'">' . $row['Title'] . '</td>';
-                                        //echo '<td>' . $row['details'] . '</td>';  
-                                        
-                                        echo '<td>' . $row['assign_by'] .'-'. $row['assign_to']. '</td>';
-                                        //echo '<td></td>'; 
-                                       
-                                        //echo '<td>' . $row['ReportedBy'] . '</td>';
-                                        echo '<td>' . $row['WorkStatus'] . '-'. $row['Status'].  '</td>';                                       
-                                        //echo '<td>' . $row['Status'] . '</td>';     
+                                        echo '<tr>';
+                                        echo '<td>' . $index . '</td>';                            
+                                        echo '<td onclick="get_company('.$row['ticket_id'].')">' . $row['CompanyName'] . '</td>';
+                                        echo '<td>' . $row['ProjectName'] . '</td>';
+                                        echo '<td>' . $row['Title'] . '</td>';
+                                        echo '<td>' . $row['details'] . '</td>';                                       
+                                        echo '<td>' . $row['ReportedOn'] . '</td>';
+                                        echo '<td>' . $row['ReportedBy'] . '</td>';
+                                        echo '<td>' . $row['WorkStatus'] . '</td>';                                       
+                                        echo '<td>' . $row['Status'] . '</td>';     
                                         //echo '<td>' . $row['attachement'] . '</td>';
                                         if(!empty($row['attachement']))
                                         {
@@ -521,7 +356,7 @@ require_once "redirect.php";
                                         }
                                         
                                         //echo '<td><i class="fas fa-edit" onclick="get_company('.$row['ticket_id '].')"></i><i class="fas fa-trash" onclick="deleteCompany('.$row['ticket_id '].')"></i></td>';
-                                        echo '<td><i class="fas fa-trash" onclick="deleteCompany('.$row['ticket_id'].')"></i></td>';
+                                        echo '<td><i class="fas fa-trash" onclick="deleteCompany('.$row['ticket_id '].')"></i></td>';
                                         echo '</tr>';
                                   $index++;
                                     }
@@ -624,6 +459,7 @@ require_once "redirect.php";
         ticket_id = "";
     });
 
+
     function saveNote()
     {
           var visibility = $("#visibility").is(":checked") ? 1 : 0;  
@@ -672,12 +508,6 @@ require_once "redirect.php";
 					formData.append("title", $("#title").val());
 					formData.append("details", $("#details").val());
 
-          formData.append("ticket_id", ticket_id);	
-
-          formData.append("assigned_by", $("#assigned_by").val());
-          formData.append("assigned_to", $("#assigned_to").val());
-          formData.append("work_status", $("#work_status").val());
-
              // Send the AJAX request
              $.ajax({
                 type: "POST",
@@ -717,7 +547,7 @@ require_once "redirect.php";
         
         function get_company(ID)
         {
-            
+          
             $.ajax({
                 type: "POST",
                 url: "ajax/get_ticket_by_id.php",
@@ -731,40 +561,14 @@ require_once "redirect.php";
                   console.log(response);
                   $(".add-btn").trigger('click');
 
-                  $("#ticket_no").html("Ticket No:" + ID + "/ Date:" + company_data.CreatedDate)
-
                   $("#company_id").val(company_data.company_id);
                   $("#project_id").val(company_data.project_id);
                   $("#title").val(company_data.title);
                   $("#details").val(company_data.details);
 
-                  if(company_data.attachement != "")
-                  {
-                    $("#download_attachment").html('<a target="_blank" href="https://icsweb.in/ContactManager/ticket_uploads/'+ company_data.attachement +'">Download</a>');
-                  } else {
-                    $("#download_attachment").html("");
-                  }                  
-                  
-
                   ticket_id = ID;
 
                   LoadTicketActivity(ID);
-
-                  if(company_data.assigned_by == null)
-                  {
-                    $("#assigned_by").val($("#login_user").val());
-                  }
-                  else
-                  {
-                    $("#assigned_by").val(company_data.assigned_by);
-                  }
-
-                  
-                  $("#assigned_to").val(company_data.assigned_to);
-
-                  $("#work_status").val(company_data.work_status);
-
-
                     
                 },
                 error: function() {

@@ -9,10 +9,12 @@ if (!empty($_GET['id'])) {
 
 
     // Fetch agent data from agent_master, agent_notification, and agent_login tables
-    $query = "SELECT am.name, am.difficulty_contact, am.address, an.mobile_no, an.whatsapp_no, an.smtp, an.email_pasword, an.email, al.user_id, al.password, al.is_admin FROM agent_master am 
+    $query = "SELECT am.city, am.aadhar_no,am.pan_no, am.photo, am.name, am.difficulty_contact, am.address, an.mobile_no, an.whatsapp_no, an.smtp, an.email_pasword, an.email, al.user_id, al.password, al.is_admin, al.agent_type FROM agent_master am 
               INNER JOIN agent_notification an ON am.id = an.agent_id
-              INNER JOIN agent_login al ON am.id = al.id
+              INNER JOIN agent_login al ON am.id = al.agent_id
               WHERE am.id = $agentId";
+
+    error_log("Query :".$query);
               
     $result = $mysqli->query($query);//var_dump($query);die();
 

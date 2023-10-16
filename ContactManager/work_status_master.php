@@ -1,9 +1,5 @@
 <?php 
-session_start();
-if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id']))) 
-{
-     echo '<script type="text/javascript">window.location = "https://icsweb.in/ContactManager/login.php";</script>';
-}
+require_once "redirect.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,14 +48,14 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                             <div class="row">
                                 <div class="col-md-6">
                                      <div class="form-group">
-                                        <label for="categoryName">Work Status Name</label>
+                                        <label for="categoryName">Work Status Name</label><span style="color:red;">*</span>
                                         <input type="text" class="form-control" id="work_status_name" name="work_status_name" required>
                                     </div>
                                 </div>
                                 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="link_status">Link Work Status</label>
+                                        <label for="link_status">Link Work Status</label><span style="color:red;">*</span>
                                         <select class="form-control" id="link_status" name="link_status" required="">
                                             <option value="">Select Status</option>
                                             <option value="1">Close</option>
@@ -108,6 +104,7 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                             <tr>
                                 <th>Sr No</th>
                                 <th>Work Status Name</th>
+                                <th>Link Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -125,10 +122,33 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                 if ($result->num_rows > 0) {
                                     // Loop through each row and output the data in <tbody>
                                   $index=1;
-                                    while ($row = $result->fetch_assoc()) {                                              
+                                    while ($row = $result->fetch_assoc()) { 
+
+
+                                        $statusName = $row['link_status'];  
+                                        if($statusName == "1")
+                                        {
+                                          $statusName = "Close";
+                                        }
+                                        else if($statusName == "2")
+                                        {
+                                          $statusName = "Hold";
+                                        }
+                                        else if($statusName == "3")
+                                        {
+                                          $statusName = "In Progress";
+                                        }
+                                        else if($statusName == "4")
+                                        {
+                                          $statusName = "Not Started";
+                                        }
+                                        
+                                        
+
                                         echo '<tr>';
                                         echo '<td>' . $index . '</td>';
                                         echo '<td>' . $row['name'] . '</td>';
+                                        echo '<td>' . $statusName . '</td>';
                                         echo '<td><i class="fas fa-edit" onclick="get_company('.$row['id'].')"></i><i class="fas fa-trash" onclick="deleteCompany('.$row['id'].')"></i></td>';
                                         echo '</tr>';
                                   $index++;
@@ -209,7 +229,7 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                     alert("Record Already Found in Database.");
                   }  else {
                     // Display error message
-                    alert("Failed to update Database.");
+                    alert('Please fill in all Mandatory fields.');
                   }
                 },
                 error: function() {

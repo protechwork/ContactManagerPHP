@@ -1,9 +1,5 @@
 <?php 
-session_start();
-if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id']))) 
-{
-     echo '<script type="text/javascript">window.location = "https://icsweb.in/ContactManager/login.php";</script>';
-}
+require_once "redirect.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -81,39 +77,55 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>User ID</label>
+                                                    <label>User ID</label><span style="color:red;">*</span>
                                                     <input type="text" class="form-control" id="user_id" name="user_id" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>Password</label>
+                                                    <label>Password</label><span style="color:red;">*</span>
                                                     <div class="input-group mb-3">
                                                       <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
                                                       </div>
-                                                      <input type="text" class="form-control" id="password" name="password" required>
+                                                      <input type="password" class="form-control" id="password" name="password" required>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         
                                         <div class="row">
-                                            <div class="col-sm-6">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Agent Type</label><span style="color:red;">*</span>
+                                                    <select class="form-control select2" id="agent_type" name="agent_type" required>
+                                                        <option value="">Please Select Agent Type</option>
+                                                        <option value="1">Support</option>
+                                                        <option value="2">Impementation</option>
+                                                        <option value="3">Sales</option>                                                        
+                                                    </select>
+                                                </div>
+                                            </div>
+
+
+
+
+                                            <div class="col-sm-6">                                               
+                                                <label>Is Admin</label>
                                                 <div class="form-check">
                                                     <input type="checkbox" class="form-check-input" id="is_admin">
                                                     <label class="form-check-label" for="exampleCheck2">Is Admin</label>
                                                 </div>
                                             </div>
                                         </div>
-                                        <button class="btn btn-primary" onclick="stepper.next()">Next</button>
+                                        <button class="btn btn-primary" onclick="validateLoginDetails()">Next</button>
                                     </div>
                                     
                                     <div id="information-part" class="content" role="tabpanel" aria-labelledby="information-part-trigger">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>Person Name</label>
+                                                    <label>Person Name</label><span style="color:red;">*</span>
                                                     <input type="text" class="form-control" id="person_name" name="person_name" required>
                                                 </div>
                                             </div>
@@ -148,24 +160,59 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                                         
                                                     </select>
                                                 </div>
+
+                                                <div class="form-group">
+                                                    <label>PAN</label>
+                                                    <input type="text" class="form-control" id="pan" name="pan" />
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>City</label>
+                                                    <input type="text" class="form-control" id="city" name="city" />
+                                                </div>
+
+                                                
+
+
+
                                             </div>
                                             <div class="col-md-6">
+                                                
+
+                                                <div class="form-group">
+                                                    <label>Aadhar</label>
+                                                    <input type="text" class="form-control" id="aadhar" name="aadhar" />
+                                                </div>
+
+                                                <!--
+                                                    <div class="form-group">
+                                                        <label>Photo</label>
+                                                        <input type="text" class="form-control" id="photo" name="photo" />
+                                                    </div>
+                                                -->
+
+                                                <div class="form-group">
+                                                    <label for="image">Agent Image (JPEG, 250x80 px):</label>
+                                                    <input type="file" name="photo" id="photo" accept="image/jpeg" required="">
+                                                </div>
+
                                                 <div class="form-group">
                                                     <label>Address</label>
                                                     <textarea type="text" class="form-control" id="address" name="address" required></textarea>
                                                 </div>
+
                                             </div>
                                         </div>
                             
                                         <button class="btn btn-primary" onclick="stepper.previous()">Previous</button>
-                                        <button class="btn btn-primary" onclick="stepper.next()">Next</button>
+                                        <button class="btn btn-primary" onclick="ValidatePersonalInfo()">Next</button>
                                     </div>
                                     
                                     <div id="login-tab" class="content" role="tabpanel" aria-labelledby="login-tab-trigger">
                                          <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>Email</label>
+                                                    <label>Email</label><span style="color:red;">*</span>
                                                     <div class="input-group mb-3">
                                                       <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fas fa-envelope"></i></span>
@@ -176,7 +223,7 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>WhatApp No</label>
+                                                    <label>WhatApp No</label><span style="color:red;">*</span>
                                                     <input type="text" class="form-control" id="whatapp_no" name="whatapp_no" required>
                                                 </div>
                                             </div>
@@ -184,7 +231,7 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>Mobile No</label>
+                                                    <label>Mobile No</label><span style="color:red;">*</span>
                                                     <div class="input-group mb-3">
                                                       <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fas fa-phone"></i></span>
@@ -520,6 +567,8 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                             <tr>
                                 <th>Sr No</th>
                                 <th>Agent Name</th>
+                                <th>Email</th>
+                                <th>Mobile</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -530,7 +579,7 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                 require_once 'ajax/dbconfig.php';
 
                                 // Fetch all data from the agent_master table
-                                $query = "SELECT * FROM agent_master";
+                                $query = "SELECT * FROM agent_master INNER JOIN agent_notification ON agent_master.id=agent_notification.agent_id GROUP by agent_master.id";
                                 $result = $mysqli->query($query);
 
                                 // Check if any rows were returned
@@ -541,6 +590,8 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                         echo '<tr>';
                                         echo '<td>' . $index . '</td>';
                                         echo '<td>' . $row['name'] . '</td>';
+                                        echo '<td>' . $row['email'] . '</td>';
+                                        echo '<td>' . $row['mobile_no'] . '</td>';
                                         //echo '<td><button class="btn btn-danger" onclick="deleteCompany('.$row['id'].')"><i class="fas fa-trash"></i></button></td>';
                                         echo '<td><i style="margin: 0 10px;cursor: pointer;" class="fas fa-edit" onclick="GetAgent('.$row['id'].')"></i> <i style="margin: 0 10px;cursor: pointer;" class="fas fa-trash" onclick="deleteCompany('.$row['id'].')"></i></td>';
                                         echo '</tr>';
@@ -581,6 +632,8 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
 
 <!-- Page specific script -->
 <script>
+  
+  /*
   $(function () {
     $("#company_table").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
@@ -590,6 +643,16 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
           { "sWidth": "70%" }, // 2nd column width 
           { "sWidth": "20%" } // 3rd column width and so on 
         ],
+      "buttons": ["excel", "pdf", "colvis"
+   ]
+    }).buttons().container().appendTo('#company_table_wrapper .col-md-6:eq(0)');
+    
+  });
+  */
+
+  $(function () {
+    $("#company_table").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": ["excel", "pdf", "colvis"/*, { 
           sExtends: 'excel',
           text: 'View'
@@ -613,6 +676,49 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
     });
     
     var agentID = "";
+
+    function ValidatePersonalInfo()
+    {
+        if ($("#person_name").val() == "")
+        {
+            Toast.fire({
+                icon: 'error',
+                title: "Please Fill all Mandatory Fileds"
+            });
+        }
+        else
+        {
+            stepper.next();
+        }
+    }
+    function validateLoginDetails ()
+    {
+        if ($("#user_id").val() == "")
+        {
+            Toast.fire({
+                icon: 'error',
+                title: "Please Fill all Mandatory Fileds"
+            });
+        } else if ($("#password").val() == "")
+        {
+            Toast.fire({
+                icon: 'error',
+                title: "Please Fill all Mandatory Fileds"
+            });
+        }
+        else if ($("#agent_type").val() == "")
+        {
+            Toast.fire({
+                icon: 'error',
+                title: "Please Fill all Mandatory Fileds"
+            });
+        }
+        else
+        {
+            stepper.next();
+        }
+        
+    }
     
   
     $(".add-btn").click(function(){
@@ -631,6 +737,12 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
         $('#mobile_no').val("");
         $('#smtp').val("");
         $('#email_password').val(""); 
+
+
+        $("#city").val("");
+        $("#aadhar").val("");
+        $("#pan").val("");
+        //$("#photo").val("");
         
         
         $("#reporting_to").val("").trigger('change');
@@ -669,12 +781,25 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                 $('#user_id').val(agentData.user_id);
                 $('#password').val(agentData.password);
                 $('#is_admin').prop('checked', agentData.is_admin);
+
+                $('#is_admin').prop('checked', false);
+                if(agentData.is_admin == "0")
+                {
+                    $('#is_admin').prop('checked', true);
+                }
                 
                 $('#email').val(agentData.email);
                 $('#whatapp_no').val(agentData.whatsapp_no);
                 $('#mobile_no').val(agentData.mobile_no);
                 $('#smtp').val(agentData.smtp);
-                $('#email_password').val(agentData.email_pasword);    
+                $('#email_password').val(agentData.email_pasword);   
+                
+                $("#agent_type").val(agentData.agent_type);
+
+                $("#city").val(agentData.city);
+                $("#aadhar").val(agentData.aadhar_no);
+                $("#pan").val(agentData.pan_no);
+                $("#photo").val(agentData.photo);
                 
                 
                
@@ -713,13 +838,43 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
             var mobileNo = $("#mobile_no").val();
             var smtp = $("#smtp").val();
             var emailPassword = $("#email_password").val();
+
+            var agentType = $("#agent_type").val();
+
+
+
+            formdata = new FormData(); 
+            var file = $("#photo")[0].files[0];
+            formdata.append("photo", file);
+
+            formdata.append("id", agentID);
+            formdata.append("person_name",  personName);
+            formdata.append("contact_in_difficulty",  contactDifficulty);
+            formdata.append("address",  address);
+            formdata.append("reporting_to",  reportingTo);
+            formdata.append("user_id",  userId);
+            formdata.append("password",  password);
+            formdata.append("is_admin",  isAdmin);
+            formdata.append("email",  email);
+            formdata.append("whatapp_no",  whatsappNo);
+            formdata.append("mobile_no",  mobileNo);
+            formdata.append("smtp",  smtp);
+            formdata.append("agent_type", agentType);
+            formdata.append("email_password",  emailPassword);
+            formdata.append("city",  $("#city").val());
+            formdata.append("aadhar_no",  $("#aadhar").val());
+            formdata.append("pan_no",  $("#pan").val());
+
+
+
+
         
             // Validate fields
             if (personName === "" || mobileNo === "" || userId === "" || email === "") {
               
               Toast.fire({
                     icon: 'error',
-                    title: "Please fill in all required fields."
+                    title: "Please fill in all Mandatory fields."
                 });
               return;
             }
@@ -728,7 +883,8 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
             $.ajax({
               url: "ajax/save_agent.php",
               type: "POST",
-              data: {
+              data: formdata,
+              /*data: {
                 id:agentID,
                 person_name: personName,
                 contact_in_difficulty: contactDifficulty,
@@ -741,11 +897,21 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                 whatapp_no: whatsappNo,
                 mobile_no: mobileNo,
                 smtp: smtp,
-                email_password: emailPassword
-              },
-              dataType: "json",
+                agent_type:agentType,
+                email_password: emailPassword,
+
+                photo:$("#photo")[0].files[0],
+
+                city: $("#city").val(),
+                aadhar_no: $("#aadhar").val(),
+                pan_no: $("#pan").val()
+              },*/
+              //dataType: "json",
+                contentType: false,
+                processData: false,
               success: function(response) {
-                if (response.status === "success") {
+                var res = JSON.parse(response);
+                if (res.status === "success") {
                   Toast.fire({
                     icon: 'success',
                     title: 'Data Saved Successfully'

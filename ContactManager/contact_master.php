@@ -1,9 +1,5 @@
 <?php 
-session_start();
-if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id']))) 
-{
-     echo '<script type="text/javascript">window.location = "https://icsweb.in/ContactManager/login.php";</script>';
-}
+require_once "redirect.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,6 +9,11 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
   <title>Contact Master</title>
 
  <?php include "include_css.php"; ?>
+
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+
+
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
   <div class="wrapper">
@@ -59,8 +60,8 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="Company">Select Company</label>
-                                        <select class="form-control" id="company_id" name="company_id" required>
+                                        <label for="Company">Select Company<span style="color:red;">*</span></label>
+                                        <select class=" form-group form-control select2" id="company_id" name="company_id" required>
                                             <option value="">Select Company</option>
                                             <?php
                                                     // Include the database configuration file
@@ -84,12 +85,12 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="contact_name">Contact Person Name</label>
+                                        <label for="contact_name">Contact Person Name<span style="color:red;">*</span></label>
                                         <input type="text" class="form-control" id="contact_name" name="contact_name" required>
                                     </div>
                                    
                                     <div class="form-group">
-                                        <label for="email_id">Email Id</label>
+                                        <label for="email_id">Email Id<span style="color:red;">*</span></label>
                                         <div class="input-group mb-3">
                                           <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
@@ -97,8 +98,16 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                           <input type="text" class="form-control" id="email_id" name="email_id" placeholder="Email" required>
                                         </div>
                                     </div>
+
+                                   
                                     <div class="form-group">
-                                        <label for="mobile_no">Mobile Number</label>
+                                        <label for="user_name">User Name<span style="color:red;">*</span></label>
+                                        <input type="text" class="form-control" id="user_name" name="user_name" required>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="mobile_no">Mobile Number<span style="color:red;">*</span></label>
                                         <div class="input-group mb-3">
                                           <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-phone"></i></span>
@@ -106,6 +115,36 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                           <input type="text" class="form-control" id="mobile_no" name="mobile_no" placeholder="Enter Mobile" required>
                                         </div>
                                         
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="mobile_no">Altenative No</label>
+                                        <div class="input-group mb-3">
+                                          <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                          </div>
+                                          <input type="text" class="form-control" id="alt_mobile" name="alt_mobile" placeholder="Enter Altenate Mobile" required>
+                                        </div>                                        
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="mobile_no">Desination</label>
+                                        <div class="input-group mb-3">
+                                          <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas"></i></span>
+                                          </div>
+                                          <input type="text" class="form-control" id="designation" name="designation" placeholder="Enter Designation" required>
+                                        </div>                                        
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="department">Department</label>
+                                        <div class="input-group mb-3">
+                                          <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas"></i></span>
+                                          </div>
+                                          <input type="text" class="form-control" id="department" name="department" placeholder="Enter Department" required>
+                                        </div>                                        
                                     </div>
                                 </div>
                                 
@@ -124,7 +163,7 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label for="status">Status</label>
+                                        <label for="status">Status<span style="color:red;">*</span></label>
                                         <select class="form-control" id="status" name="status" required>
                                                     <option value="1">Active</option>
                                                     <option value="0">In Active</option>
@@ -132,19 +171,45 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                         
                                     </div> 
                                     
+
                                     <div class="form-group">
-                                        <label for="user_name">User Name</label>
-                                        <input type="text" class="form-control" id="user_name" name="user_name" required>
+                                        <label for="user_pass">User Password<span style="color:red;">*</span></label>
+                                        <input type="password" class="form-control" id="user_pass" name="user_pass" required>
                                     </div>
+
+
+                                   
+
+
+                                    
+
+
+
+                                    <div class="form-group">
+                                        <label for="city">City</label>
+                                        <div class="input-group mb-3">                                          
+                                          <input type="text" class="form-control" id="city" name="city" placeholder="Enter City" required>
+                                        </div>                                        
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="dob">Date Of Birth</label>
+                                        <input type="text" class="form-control" id="dob" name="dob" placeholder="Enter Date of Birth" required>                                       
+                                    </div>
+
+                                    <div class="form-group">
+                                          <label for="address">Address</label>
+                                          <div class="input-group mb-3">                                         
+                                            <textarea type="text" class="form-control" rows="5" id="address" name="address" placeholder="Enter Address" required> </textarea>
+                                          </div>                                        
+                                      </div>
+
+                                   
                                     
                                 </div> 
                                 
-                                <div class="col-md-6">
-                                     <div class="form-group">
-                                        <label for="user_pass">User Password</label>
-                                        <input type="password" class="form-control" id="user_pass" name="user_pass" required>
-                                    </div>
-                                </div>
+                               
                             
                             </div>
                             
@@ -196,10 +261,10 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                     <thead>
                                         <tr>
                                             <th>Sr No</th>
-                                            <th>Company Name</th>
-                                            <th>Persona Name</th>
+                                            <th>Contact Name</th>
+                                            <th>Comapany Name</th>
+                                            <th>Mobile No</th>
                                             <th>Email ID</th>
-                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -219,10 +284,10 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                         while ($row = $result->fetch_assoc()) {                                     
                                             echo '<tr>';
                                             echo '<td>' . $index . '</td>';
-                                            echo '<td>' . $row['company_name'] . '</td>';
                                             echo '<td>' . $row['name'] . '</td>';
+                                            echo '<td>' . $row['company_name'] . '</td>';
+                                            echo '<td>' . $row['mobile_no'] . '</td>';
                                             echo '<td>' . $row['email_id'] . '</td>';
-                                            echo '<td>' . $row['status'] . '</td>';
                                             echo '<td><i class="fas fa-edit" onclick="get_contact_by_id('.$row['contact_id'].')"></i> <i class="fas fa-trash" onclick="delete_contact('.$row['contact_id'].')"></i> </td>';
                                             echo '</tr>';
                                       $index++;
@@ -252,6 +317,9 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
     <!-- ./wrapper -->
 
 <?php include "include_js.php"; ?>
+
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
 <script>       
   $(function () {
     $("#contact_table").DataTable({
@@ -260,6 +328,35 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
         colReorder: true,
       "buttons": ["excel", "pdf", "colvis"]
     }).buttons().container().appendTo('#contact_table_wrapper .col-md-6:eq(0)');
+
+    $("#dob").datepicker({ dateFormat: 'yy-mm-dd' });
+
+    $('.select2').select2()
+
+
+/*
+    $("#mobile_no").on("keypress keyup blur",function (event) { 
+
+      $(this).val($(this).val().replace(/[^a-zA-Z ]/, ""));
+
+      if (!((event.charCode > 64 && 
+        event.charCode < 91) || event.charCode ==32 || (event.charCode > 96 && 
+          event.charCode < 123))) {
+          event.preventDefault();
+        }
+    });*/
+
+
+    $('#mobile_no,#alt_mobile').keypress(function (e) {    
+    
+          var charCode = (e.which) ? e.which : event.keyCode    
+
+          if (String.fromCharCode(charCode).match(/[^0-9]/g))    
+
+              return false;                        
+
+    }); 
+
     
   });
          $(".add-btn").click(function(){
@@ -271,6 +368,14 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
             $("#display_name").val("");
             $("#display_image").val("");
             $("#status").val("1");
+
+
+            $("#alt_mobile").val("");
+            $("#designation").val("");
+            $("#department").val("");
+            $("#address").val("");
+            $("#city").val("");
+            $("#dob").val("");
             
             $("#user_name").val("");
             $("#user_pass").val("");
@@ -298,6 +403,13 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                     $("#display_name").val(contactData.display_name);
                     //$("#display_image").val(contactData.display_image);
                     $("#status").val(contactData.status);
+
+                    $("#alt_mobile").val(contactData.alt_mobile);
+                    $("#designation").val(contactData.designation);
+                    $("#department").val(contactData.department);
+                    $("#address").val(contactData.address);
+                    $("#city").val(contactData.city);
+                    $("#dob").val(contactData.dob);
                     
                     get_contact_login_by_id(contactData.contact_id);
                    
@@ -369,6 +481,13 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
             formdata.append("display_name" , $("#display_name").val());
             //formdata.append("display_image" , $("#display_image").val());
             formdata.append("status" , $("#status").val());
+
+            formdata.append("alt_mobile", $("#alt_mobile").val());
+            formdata.append("designation", $("#designation").val());
+            formdata.append("department", $("#department").val());
+            formdata.append("address", $("#address").val());
+            formdata.append("city", $("#city").val());
+            formdata.append("dob",$("#dob").val());
             
             formdata.append("user_name" , $("#user_name").val());
             formdata.append("user_pass" , $("#user_pass").val());

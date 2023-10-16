@@ -12,28 +12,6 @@ $details = $_POST['details'];
 //$attachment = $_POST['attachment'];
 $userID = $_SESSION['user_id'];
 
-$assigned_by = 0;
-$assigned_to = 0;
-$work_status = 0;
-
-if($_POST["assigned_by"] == "" || $_POST["assigned_by"] == null) {
-    $assigned_by = 0;
-} else {
-    $assigned_by = $_POST["assigned_by"];
-}
-
-if($_POST["assigned_to"] == "" || $_POST["assigned_to"] == null) {
-    $assigned_to = 0;
-} else {
-    $assigned_to = $_POST["assigned_to"];
-}
-
-if($_POST["work_status"] == "" || $_POST["work_status"] == null) {
-    $work_status = 0;
-} else {
-    $work_status = $_POST["work_status"];
-}
-
 /*
 if(!empty($_FILES['attachment']['name']))
 {
@@ -45,9 +23,6 @@ if(!empty($_FILES['attachment']['name']))
     }
 }
 */
-
-
-//assigned_to = ".$assigned_to.", assigned_by = ".$assigned_by.", work_status = ".$work_status."
 
 // Check if the data is not blank
 //if (!empty($project_id) && !empty($company_id) && !empty($title) && !empty($details) && !empty($attachment) )
@@ -67,26 +42,9 @@ if (!empty($project_id) && !empty($company_id) && !empty($title) && !empty($deta
     //var_dump($count);die();
     if (intval($count) !=  0)
     {
-        $updateQuery = "UPDATE ticket SET assigned_to = ".$assigned_to.", assigned_by = ".$assigned_by.", work_status = ".$work_status."  WHERE ticket_id  = ".$ticketID;
+        $updateQuery = "UPDATE companies SET name='".$company_name."', GST='".$gst."', Address='".$address."' WHERE ticket_id  = ".$ticketID;
         //var_dump($updateQuery);die();
         $mysqli->query($updateQuery);
-
-        /*
-            Update Ticket Activity
-        */
-        $comment =  "Ticket Assign To: ".getAgentNameById($assigned_to);
-        $comment .=  "<br> Ticket Assign By: ".getAgentNameById($assigned_by);
-        $comment .=  "<br> Work Status: ".getWorkStatusById($work_status);
-        $visibility = 0;
-       
-
-        $insertQuery = "INSERT INTO ticket_activity (ticket_id, perfomed_user_id, comment, visibility, datetime) VALUES (".$ticketID.", ".$userID.", '".$comment."', ".$visibility.", now() ) ";   
-        //var_dump($insertQuery);die();
-        $mysqli->query($insertQuery);
-
-
-
-
          $response = array('status' => 'success');
           echo json_encode($response);
     }
@@ -104,14 +62,14 @@ if (!empty($project_id) && !empty($company_id) && !empty($title) && !empty($deta
 
 
           $defaultWorkStatus = 0 ;
-          /*$query = "SELECT default_work_status as work_status FROM settings WHERE id  = 1 ";
+          $query = "SELECT default_work_status as work_status FROM settings WHERE id  = 1 ";
           $result = $mysqli->query($query);
           $row = $result->fetch_assoc();
-          $defaultWorkStatus = $row['work_status'];*/
+          $defaultWorkStatus = $row['work_status'];
           
         
            // Insert a new record
-           $insertQuery = "INSERT INTO ticket (company_id, project_id, title, details, attachement, reported_on, reported_by, work_status, status) VALUES (".$company_id.", ".$project_id.", '".$title."', '".$details."', '', CURRENT_DATE, ".$userID.", ".$defaultWorkStatus.", 0) ";   
+           $insertQuery = "INSERT INTO ticket (company_id, project_id, title, details, attachement, reported_on, reported_by, work_status, status) VALUES (".$company_id.", ".$project_id.", '".$title."', '".$details."', '', now(), ".$userID.", ".$defaultWorkStatus.", 0) ";   
            //var_dump($insertQuery);die();
            $mysqli->query($insertQuery);
            
@@ -119,16 +77,16 @@ if (!empty($project_id) && !empty($company_id) && !empty($title) && !empty($deta
            {
                 upload_ticket_file($mysqli->insert_id);
            }
-
-        $newTicketId = $mysqli->insert_id;
-        $comment =  "New Ticket Created By: ".getUserNameById($userID);    
-        $visibility = 0;
-       
-
-        $insertQuery = "INSERT INTO ticket_activity (ticket_id, perfomed_user_id, comment, visibility, datetime) VALUES (".$newTicketId.", ".$userID.", '".$comment."', ".$visibility.", now() ) ";           
-        $mysqli->query($insertQuery);
            
            //$mysqli->insert_id
+
+           $newTicketId = $mysqli->insert_id;
+           $comment =  "New Ticket Created By: ".getUserNameById($userID);    
+           $visibility = 0;
+          
+   
+           $insertQuery = "INSERT INTO ticket_activity (ticket_id, perfomed_user_id, comment, visibility, datetime) VALUES (".$newTicketId.", ".$userID.", '".$comment."', ".$visibility.", now() ) ";           
+           $mysqli->query($insertQuery);
         
           // Return a success response
           $response = array('status' => 'success');

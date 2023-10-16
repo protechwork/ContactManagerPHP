@@ -1,9 +1,5 @@
 <?php 
-session_start();
-if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id']))) 
-{
-     echo '<script type="text/javascript">window.location = "https://icsweb.in/ContactManager/login.php";</script>';
-}
+require_once "redirect.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,7 +46,7 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                     <div class="modal-body">
                       <form>
                             <div class="form-group">
-                                <label for="categoryName">Company Name</label>
+                                <label for="categoryName">Company Name<span style="color:red;">*</span></label>
                                 <input type="text" class="form-control" id="companyName" name="companyName" required>
                             </div>
                             
@@ -67,6 +63,15 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                         <textarea type="text" class="form-control" id="address" name="address" required></textarea>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="city">City</label>
+                                        <input type="text" class="form-control" id="city" name="city">
+                                    </div>
+                                </div>                                
                             </div>
                             
                             
@@ -201,7 +206,7 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
       $("#companyName").val("");
       $("#gst").val("");
       $("#address").val("");
-                  
+      $("#city").val("");
                   
     });
   
@@ -215,7 +220,8 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                   company_id:$("#id").val(),
                   company_name:$("#companyName").val(),
                   gst:$("#gst").val(),  
-                  address:$("#address").val()  
+                  address:$("#address").val(),  
+                  city:$("#city").val()
                 },
                 dataType: "json",
                 success: function(response) {
@@ -229,7 +235,7 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                     alert("Record Already Found in Database.");
                   }  else {
                     // Display error message
-                    alert("Failed to update Database.");
+                    alert('Please fill in all Mandatory fields.');
                   }
                 },
                 error: function() {
@@ -257,6 +263,7 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                   $("#companyName").val(company_data.name);
                   $("#gst").val(company_data.GST);
                   $("#address").val(company_data.Address);
+                  $("#city").val(company_data.city);
                 },
                 error: function() {
                   // Display error message

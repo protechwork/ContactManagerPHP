@@ -6,9 +6,12 @@ require_once 'dbconfig.php';
 $company_name = $_POST['company_name'];
 $gst = $_POST['gst'];
 $address = $_POST['address'];
+$city = $_POST['city'];
 
 // Check if the data is not blank
-if (!empty($company_name) && !empty($gst) && !empty($address) )
+//if (!empty($company_name) && !empty($gst) && !empty($address) )
+error_log("Comapany Name:".$company_name);
+if (!empty($company_name) )
 {
     $companyID="0";
     if(!empty($_POST['company_id']))
@@ -23,7 +26,7 @@ if (!empty($company_name) && !empty($gst) && !empty($address) )
     //var_dump($count);die();
     if (intval($count) !=  0)
     {
-        $updateQuery = "UPDATE companies SET name='".$company_name."', GST='".$gst."', Address='".$address."' WHERE company_id  = ".$companyID;
+        $updateQuery = "UPDATE companies SET name='".$company_name."', GST='".$gst."', Address='".$address."', city='".$city."' WHERE company_id  = ".$companyID;
         //var_dump($updateQuery);die();
         $mysqli->query($updateQuery);
          $response = array('status' => 'success');
@@ -42,7 +45,7 @@ if (!empty($company_name) && !empty($gst) && !empty($address) )
           }
         
            // Insert a new record
-           $insertQuery = "INSERT INTO companies (name, GST, Address) VALUES ('$company_name', '$gst', '$address')";   
+           $insertQuery = "INSERT INTO companies (name, GST, Address, city) VALUES ('$company_name', '$gst', '$address', '$city')";   
            //var_dump($insertQuery);die();
            $mysqli->query($insertQuery);
         

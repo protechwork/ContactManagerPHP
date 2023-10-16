@@ -1,4 +1,6 @@
-
+<?php 
+require_once "redirect.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,9 +79,40 @@
                                             <option value="sidebar-light-primary">Light</option>
                               </select>
                             </div> 
+
+                            <div class="form-group">
+                                <label for="default_work_status">Defualt Work Status</label>
+                                <select class="form-control" id="default_work_status" name="default_work_status" required>
+                                            <option value="">Select Work Status</option>
+                                            <?php
+                                              // Include the database configuration file
+                                              require_once 'ajax/dbconfig.php';
+                                              // Fetch all data from the work_status_master table
+                                              $query = "SELECT * FROM work_status_master";
+                                              $result = $mysqli->query($query);
+
+                                              // Check if any rows were returned
+                                              if ($result->num_rows > 0)
+                                              {                                                                                              
+                                                  while ($row = $result->fetch_assoc())
+                                                  {                                                      
+                                                      echo '<option value="'.$row['id'].'">'.$row['name'].'</option>';                                                                                                     
+                                                  }
+                                              }
+                                              // Close the database connection
+                                              $mysqli->close();
+                                            ?>
+                                </select>
+                            </div> 
+
+
+                            <div class="form-group">
+                                <label for="start_ticket_no">Start Ticket No</label>                                
+                                  <input type="text" class="form-control" id="start_ticket_no" name="start_ticket_no" required>                                  
+                            </div> 
                             
                             <a href="index.php" class="btn btn-<?=$card_color?>" role="button">Close</a>
-                            
+                            <button id="btnSaveTicketNo" type="button" class="btn btn-primary">Save</button>
                             
                         </div>
                     </div>
@@ -112,6 +145,57 @@
     
     $("#change_card").change(function() {
         alert("test");
+    });
+
+    LoadSettings();
+    function LoadSettings()
+    {
+      $.ajax({
+        type: "POST",
+        url: "ajax/get_setting.php",
+        data: {},
+        dataType: "json",
+        success: function(response)
+        {
+          // Handle the response from the server
+          var setting_data = response[0];
+          console.log(response);          
+
+          $("#default_work_status").val(setting_data.default_work_status);
+          $("#start_ticket_no").val(setting_data.default_start_ticket_no);        
+        },
+        error: function() {
+          // Display error message
+          alert("An error occurred while updating Database.");
+        }
+      });
+    }
+
+
+    $("#btnSaveTicketNo").click(function()
+    {
+          $.ajax({
+            type: "POST",
+            url: "ajax/save_settings.php",
+            data: {
+              work_status:$("#default_work_status").val(),
+              start_ticket_no:$("#start_ticket_no").val()
+            },
+            dataType: "json",
+            success: function(response)
+            {
+              // Handle the response from the server
+              if (response.status === "success")
+              {
+                // Display success message
+                alert("Settings updated successfully.");                
+              }
+            },
+            error: function() {
+              // Display error message
+              alert("An error occurred while updating Database.");
+            }
+          });
     });
 
 

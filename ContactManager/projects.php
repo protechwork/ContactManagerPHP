@@ -1,9 +1,5 @@
 <?php 
-session_start();
-if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id']))) 
-{
-     echo '<script type="text/javascript">window.location = "https://icsweb.in/ContactManager/login.php";</script>';
-}
+require_once "redirect.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,14 +48,14 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                             <div class="row">
                                 <div class="col-md-6">
                                      <div class="form-group">
-                                        <label for="categoryName">Project Name</label>
+                                        <label for="categoryName">Project Name</label><span style="color:red;">*</span>
                                         <input type="text" class="form-control" id="name" name="name" required>
                                     </div>
                                 </div>
                                 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="Company">Select Company</label>
+                                        <label for="Company">Select Company</label><span style="color:red;">*</span>
                                         <select class="form-control" id="company_id" name="company_id" required>
                                             <option value="">Select Company</option>
                                             <?php
@@ -209,6 +205,9 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                             <tr>
                                 <th>Sr No</th>
                                 <th>Project Name</th>
+                                <th>Company Name</th>
+                                <th>Type</th>
+                                <th>Work Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -219,7 +218,19 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                 require_once 'ajax/dbconfig.php';
 
                                 // Fetch all data from the project table
-                                $query = "SELECT * FROM project";
+                                $query = "SELECT project.id,project.name AS project_name, companies.name AS company_name, 
+                                (CASE 
+                                    WHEN project.type = 1 THEN 'AMC Support'
+                                    WHEN project.type = 2 THEN  'Sales'
+                                    WHEN project.type = 3 THEN  'Recovery'
+                                    WHEN project.type = 4 THEN 'Developement'
+                                   WHEN project.type = 5 THEN 'Implementation'
+                                    ELSE 'Not Defined'
+                                END) AS type_name,
+                                work_status_master.name as status_name
+                            FROM project INNER JOIN companies ON project.company_id=companies.company_id
+                            LEFT JOIN work_status_master ON project.status=work_status_master.id";
+
                                 $result = $mysqli->query($query);
 
                                 // Check if any rows were returned
@@ -229,7 +240,10 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                                     while ($row = $result->fetch_assoc()) {                                              
                                         echo '<tr>';
                                         echo '<td>' . $index . '</td>';
-                                        echo '<td>' . $row['name'] . '</td>';
+                                        echo '<td>' . $row['project_name'] . '</td>';
+                                        echo '<td>' . $row['company_name'] . '</td>';
+                                        echo '<td>' . $row['type_name'] . '</td>';
+                                        echo '<td>' . $row['status_name'] . '</td>';
                                         echo '<td><i class="fas fa-edit" onclick="get_company('.$row['id'].')"></i><i class="fas fa-trash" onclick="deleteCompany('.$row['id'].')"></i></td>';
                                         echo '</tr>';
                                   $index++;
@@ -337,7 +351,7 @@ if(!(isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])))
                     alert("Record Already Found in Database.");
                   }  else {
                     // Display error message
-                    alert("Failed to update Database.");
+                    alert('Please fill in all Mandatory fields.');
                   }
                 },
                 error: function() {

@@ -1,12 +1,10 @@
 <?php
-session_start();
 // Include the database configuration file
 require_once 'dbconfig.php';
 
-$user_name = $_POST['user_name'];
-$user_pass = $_POST['user_pass'];
+$id = $_POST['ticket_id'];
 
-$query = "SELECT * FROM agent_login WHERE user_id='".$user_name. "' AND password='".$user_pass."'";
+$query = "SELECT DATE_FORMAT(datetime, '%d/%m/%Y %H:%i') as datetime,ticket_id,agent_login.user_id as user_name,IF(visibility = 0, 'No', 'Yes') as notify_contact,comment FROM ticket_activity INNER JOIN agent_login ON agent_login.id=ticket_activity.perfomed_user_id WHERE ticket_id=".$id. " ORDER BY datetime DESC";
 $result = $mysqli->query($query);
 
 // Check if any rows were returned
@@ -20,9 +18,7 @@ if ($result->num_rows > 0) {
     }
 
     // Convert the data array to JSON format
-    $json_data = json_encode(array("user_id"=> $data[0]["id"]));
-    $_SESSION['user_id'] = $data[0]["id"];
-    $_SESSION['user_type'] = $data[0]["is_admin"]; //0 admin, 1 agent, 2 contact
+    $json_data = json_encode($data);
 
     // Set the response header to JSON
     header('Content-Type: application/json');
@@ -31,8 +27,7 @@ if ($result->num_rows > 0) {
     echo $json_data;
 } else {
     // No rows found
-    header('Content-Type: application/json');
-    echo json_encode(array("user_id"=> "0"));
+    echo 'No data found.';
 }
 
 // Close the database connection
