@@ -17,3 +17,9 @@ if ($mysqli->connect_error) {
     die('Connection failed: ' . $mysqli->connect_error);
 }
 
+ini_set('log_errors', 1);
+// Set Error Log Path Variable (Grabs the Root Directory of the Project, then appends on the path)
+$errorPath = dirname(substr(dirname(__FILE__),strlen($_SERVER['DOCUMENT_ROOT']))) . '/Error/error.log';
+//ini_set('error_log', $errorPath);
+ini_set('error_log', '/home1/icsweho2/public_html/ContactManager/Error/error.log');
+

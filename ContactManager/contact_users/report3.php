@@ -22,7 +22,7 @@ require_once "redirect.php";
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Ticket Creation</h1>
+            <h1>In-Progress Ticket</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -340,12 +340,12 @@ require_once "redirect.php";
                                 LEFT JOIN agent_master assgnby ON tkt.assigned_by = assgnby.id
                                 LEFT JOIN agent_master assgnto ON tkt.assigned_to = assgnto.id
                                 LEFT JOIN work_status_master wstatus ON tkt.work_status = wstatus.id
-                                WHERE  tkt.reported_by=".$_SESSION['user_id'];
+                                WHERE wstatus.link_status=3 AND tkt.reported_by=".$_SESSION['user_id'];
 
                               if($_SESSION['user_type'] == "3")
                               {
                                 $query = "SELECT 
-                                tkt.ticket_id,
+                               tkt.ticket_id,
                                 cmp.name CompanyName, 
                                 pro.name ProjectName, 
                                 tkt.title Title, 
@@ -375,13 +375,13 @@ require_once "redirect.php";
                                 LEFT JOIN work_status_master wstatus ON tkt.work_status = wstatus.id
                                 LEFT JOIN contacts cnt ON cnt.company_id=cmp.company_id 
                                 LEFT JOIN agent_login log ON log.contact_id=cnt.contact_id
-                                WHERE log.id =".$_SESSION['user_id'];
+                                WHERE wstatus.link_status=3 AND log.id =".$_SESSION['user_id'];
                               }
 
                               if($_SESSION['user_type'] == "4")
                               {
                                 $query = "SELECT 
-                                tkt.ticket_id,
+                               tkt.ticket_id,
                                 cmp.name CompanyName, 
                                 pro.name ProjectName, 
                                 tkt.title Title, 
@@ -399,23 +399,23 @@ require_once "redirect.php";
                                   WHEN tkt.status = 0 THEN 'In-Active'
                                   ELSE 'Active'
                                 END Status,
-                                  DATE_FORMAT(tkt.reported_on, '%d-%m-%Y %h:%i ') ReportedOn, 
+                                  DATE_FORMAT(tkt.reported_on, '%d-%m-%Y %h-%i-%s ') ReportedOn, 
                                   tkt.reported_by ReportedBy, 
                                   tkt.attachement 
-
                               FROM 
                                 ticket tkt 
-                                LEFT JOIN companies cmp ON tkt.company_id = cmp.company_id 
+                                INNER JOIN companies cmp ON tkt.company_id = cmp.company_id 
                                 LEFT JOIN project pro ON tkt.project_id = pro.id 
                                 LEFT JOIN agent_master assgnby ON tkt.assigned_by = assgnby.id
                                 LEFT JOIN agent_master assgnto ON tkt.assigned_to = assgnto.id
                                 LEFT JOIN work_status_master wstatus ON tkt.work_status = wstatus.id
-                                WHERE  tkt.contact_ids=(SELECT agent_login.contact_id FROM agent_login WHERE agent_login.id=".$_SESSION['user_id'].") OR tkt.reported_by=".$_SESSION['user_id'];
+                                LEFT JOIN contacts cnt ON cnt.company_id=cmp.company_id 
+                                LEFT JOIN agent_login log ON log.contact_id=cnt.contact_id
+                                WHERE tkt.contact_ids=(SELECT agent_login.contact_id FROM agent_login WHERE agent_login.id=".$_SESSION['user_id'].") AND wstatus.link_status=3 AND log.id =".$_SESSION['user_id'];
                               }
 
-                                error_log("UserType:".$_SESSION['user_type']);
                                 error_log("UserID:".$_SESSION['user_id']);
-                                error_log("ticket.php line:383 Query:".$query);
+                                error_log("Query:".$query);
                                 
 
                                 $result = $mysqli->query($query);

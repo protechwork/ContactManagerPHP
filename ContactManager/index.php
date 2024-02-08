@@ -61,10 +61,14 @@ require_once "redirect.php";
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        <!-- Small boxes (Stat box) -->
+        
         <div class="row">
+
+
+        <!--
+
           <div class="col-lg-3 col-6">
-            <!-- small box -->
+            
             <div class="small-box bg-info">
               <div class="inner">
                 <h3><?php
@@ -97,9 +101,9 @@ require_once "redirect.php";
               <a href="company_master.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
-          <!-- ./col -->
+          
           <div class="col-lg-3 col-6">
-            <!-- small box -->
+           
             <div class="small-box bg-success">
               <div class="inner">
                 <h3><?php
@@ -123,7 +127,7 @@ require_once "redirect.php";
                         }
 
                         // Close the database connection
-                        $mysqli->close();
+                        //$mysqli->close();
                     ?></h3>
 
                 <p>Registrated Contacts</p>
@@ -134,9 +138,9 @@ require_once "redirect.php";
               <a href="contact_master.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
-          <!-- ./col -->
+         
           <div class="col-lg-3 col-6">
-            <!-- small box -->
+            
             <div class="small-box bg-warning">
               <div class="inner">
                 <h3>44</h3>
@@ -149,9 +153,9 @@ require_once "redirect.php";
               <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
-          <!-- ./col -->
+         
           <div class="col-lg-3 col-6">
-            <!-- small box -->
+          
             <div class="small-box bg-danger">
               <div class="inner">
                 <h3>65</h3>
@@ -164,7 +168,121 @@ require_once "redirect.php";
               <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
-          <!-- ./col -->
+
+          -->
+          
+
+          <?php
+                  // Include the database configuration file
+                  require_once 'ajax/dbconfig.php';
+
+                  $close = 0;
+                  $hold = 0;
+                  $inprogress = 0;
+                  $notstarted = 0;
+
+                  // Fetch all data from the contacts table
+                  $query = "SELECT (SELECT 
+                  COUNT(tkt.ticket_id)
+                  FROM 
+                  ticket tkt 
+                  LEFT JOIN work_status_master wstatus ON tkt.work_status = wstatus.id
+                  WHERE wstatus.link_status=1) AS close,
+                  (SELECT 
+                  COUNT(tkt.ticket_id)
+                  FROM 
+                  ticket tkt 
+                  LEFT JOIN work_status_master wstatus ON tkt.work_status = wstatus.id
+                  WHERE wstatus.link_status=2) AS hold,
+                  (SELECT 
+                  COUNT(tkt.ticket_id)
+                  FROM 
+                  ticket tkt 
+                  LEFT JOIN work_status_master wstatus ON tkt.work_status = wstatus.id
+                  WHERE wstatus.link_status=3) AS inprogress,
+                  (SELECT 
+                  COUNT(tkt.ticket_id)
+                  FROM 
+                  ticket tkt 
+                  LEFT JOIN work_status_master wstatus ON tkt.work_status = wstatus.id
+                  WHERE wstatus.link_status=4) AS not_started";
+                  $result = $mysqli->query($query);
+
+                  // Check if any rows were returned
+                  if ($result->num_rows > 0) {
+                      // Loop through each row and output the data in <tbody>
+                    
+                      if ($row = $result->fetch_assoc()) {                                              
+                          //echo $row['cnt'];
+                          $close = $row['close'];
+                          $hold = $row['hold'];
+                          $inprogress = $row['inprogress'];
+                          $notstarted = $row['not_started'];
+                      }
+                  }
+
+                  // Close the database connection
+                  $mysqli->close();
+              ?>
+
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3><?=$close?></h3>
+                <p>Close Tickets</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="report1.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <h3><?=$hold?></h3>
+                <p>Hold Tickets</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="report2.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3><?=$inprogress?></h3>
+                <p>In-Progress Tickets</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="report3.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><?=$notstarted?></h3>
+                <p>Not Started Tickets</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="report4.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+
+
+
         </div>
         <!-- /.row -->
 

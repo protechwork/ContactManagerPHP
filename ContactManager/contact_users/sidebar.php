@@ -14,7 +14,22 @@
     {
         $row = $result->fetch_assoc();
         $file_name = $row['file_name'];
+    }
+    
+    $query = "SELECT * FROM agent_login WHERE id = ".$_SESSION['user_id'];
+    $result = $mysqli->query($query);
+    $loginUserName = '';
+    
+    if(mysqli_num_rows($result) > 0)
+    {
+        $row = $result->fetch_assoc();
+        $loginUserName = $row['user_id'];
     } 
+
+
+
+
+
 ?>
     
   <!-- Navbar -->
@@ -48,7 +63,11 @@
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <a href="#" class="dropdown-item">
-            <i class="fas fa-user mr-2"></i>Profile
+            <i class="fas fa-user mr-2"></i><?=$loginUserName?>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="change_password.php" class="dropdown-item">
+            <i class="fa fa-cog nav-icon"></i> Change Password
           </a>
           <div class="dropdown-divider"></div>
           <a href="../login.php" class="dropdown-item">
@@ -115,11 +134,50 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
          
           
-		  <li class="nav-item">
+          <li class="nav-item">
             <a href="ticket.php" class="nav-link">
-              <i class="far fa-user nav-icon"></i>
+              <i class="far fa-comments nav-icon"></i>
               <p>Ticket</p>
             </a>
+          </li>         
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>
+                Reports
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="report1.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Close</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="report2.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Hold</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="report3.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>In Progress</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="report4.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Not Started</p>
+                </a>
+              </li>
+            </ul>
           </li>
           
           

@@ -199,6 +199,15 @@ require_once "redirect.php";
                                     </div>
 
                                     <div class="form-group">
+                                        <label for="contact_type">User Type</label>
+                                        <select class="form-control" id="contact_type" name="contact_type" required="">
+                                          <option value="2">Contact User</option>
+                                          <option value="3">Contact Admin</option>
+                                          <option value="4">Contact+Agent</option>
+                                      </select>
+                                    </div>
+
+                                    <div class="form-group">
                                           <label for="address">Address</label>
                                           <div class="input-group mb-3">                                         
                                             <textarea type="text" class="form-control" rows="5" id="address" name="address" placeholder="Enter Address" required> </textarea>
@@ -282,13 +291,13 @@ require_once "redirect.php";
                                         // Loop through each row and output the data in <tbody>
                                       $index=1;
                                         while ($row = $result->fetch_assoc()) {                                     
-                                            echo '<tr>';
+                                            echo '<tr onclick="get_contact_by_id('.$row['contact_id'].')">';
                                             echo '<td>' . $index . '</td>';
                                             echo '<td>' . $row['name'] . '</td>';
                                             echo '<td>' . $row['company_name'] . '</td>';
                                             echo '<td>' . $row['mobile_no'] . '</td>';
                                             echo '<td>' . $row['email_id'] . '</td>';
-                                            echo '<td><i class="fas fa-edit" onclick="get_contact_by_id('.$row['contact_id'].')"></i> <i class="fas fa-trash" onclick="delete_contact('.$row['contact_id'].')"></i> </td>';
+                                            echo '<td> <i class="fas fa-trash" onclick="delete_contact('.$row['contact_id'].')"></i> </td>';
                                             echo '</tr>';
                                       $index++;
                                         }
@@ -436,6 +445,7 @@ require_once "redirect.php";
                     var contactData = response[0];
                     $("#user_name").val(contactData.user_id);
                     $("#user_pass").val(contactData.password);
+                    $("#contact_type").val(contactData.is_admin);
                    
                 },
                 error: function() {
@@ -491,6 +501,7 @@ require_once "redirect.php";
             
             formdata.append("user_name" , $("#user_name").val());
             formdata.append("user_pass" , $("#user_pass").val());
+            formdata.append("user_type" , $("#contact_type").val());
             
              // Send the AJAX request
              $.ajax({

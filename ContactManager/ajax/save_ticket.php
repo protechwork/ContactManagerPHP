@@ -12,6 +12,17 @@ $details = $_POST['details'];
 //$attachment = $_POST['attachment'];
 $userID = $_SESSION['user_id'];
 
+$contact_ids = '';
+
+if($_POST["contact_ids"] == "" || $_POST["contact_ids"] == null) {
+    $contact_ids = '';
+} else {
+    $contact_ids = $_POST["contact_ids"];
+}
+
+
+//$commaSeparatedIds = explode(',', $contact_ids);
+
 $assigned_by = 0;
 $assigned_to = 0;
 $work_status = 0;
@@ -67,9 +78,11 @@ if (!empty($project_id) && !empty($company_id) && !empty($title) && !empty($deta
     //var_dump($count);die();
     if (intval($count) !=  0)
     {
-        $updateQuery = "UPDATE ticket SET assigned_to = ".$assigned_to.", assigned_by = ".$assigned_by.", work_status = ".$work_status."  WHERE ticket_id  = ".$ticketID;
+        $updateQuery = "UPDATE ticket SET contact_ids = '".$contact_ids."', assigned_to = ".$assigned_to.", assigned_by = ".$assigned_by.", work_status = ".$work_status."  WHERE ticket_id  = ".$ticketID;
         //var_dump($updateQuery);die();
         $mysqli->query($updateQuery);
+
+        
 
         /*
             Update Ticket Activity
@@ -84,11 +97,15 @@ if (!empty($project_id) && !empty($company_id) && !empty($title) && !empty($deta
         //var_dump($insertQuery);die();
         $mysqli->query($insertQuery);
 
+        //Notify Agent
+        $agentLoginId = get_login_id_by_agent_id($assigned_to);
+        add_notification($agentLoginId, $ticketID, "Ticket Assign By: ".getAgentNameById($assigned_by));
 
 
 
-         $response = array('status' => 'success');
-          echo json_encode($response);
+
+        $response = array('status' => 'success', 'msg' => 'Ticket Updated:'.$ticketID);
+        echo json_encode($response);
     }
     else
     {
@@ -111,7 +128,7 @@ if (!empty($project_id) && !empty($company_id) && !empty($title) && !empty($deta
           
         
            // Insert a new record
-           $insertQuery = "INSERT INTO ticket (company_id, project_id, title, details, attachement, reported_on, reported_by, work_status, status) VALUES (".$company_id.", ".$project_id.", '".$title."', '".$details."', '', CURRENT_DATE, ".$userID.", ".$defaultWorkStatus.", 0) ";   
+           $insertQuery = "INSERT INTO ticket (company_id, project_id, contact_ids, title, details, attachement, reported_on, reported_by, work_status, status) VALUES (".$company_id.", ".$project_id.", '".$contact_ids."', '".$title."', '".$details."', '', now(), ".$userID.", ".$defaultWorkStatus.", 0) ";   
            //var_dump($insertQuery);die();
            $mysqli->query($insertQuery);
            
@@ -131,7 +148,7 @@ if (!empty($project_id) && !empty($company_id) && !empty($title) && !empty($deta
            //$mysqli->insert_id
         
           // Return a success response
-          $response = array('status' => 'success');
+          $response = array('status' => 'success', 'msg' => 'Ticket Created:'.$newTicketId);
           echo json_encode($response);
     }
 	
@@ -144,6 +161,43 @@ if (!empty($project_id) && !empty($company_id) && !empty($title) && !empty($deta
 
 // Close the database connection
 $mysqli->close();
+
+function add_notification($LoginID, $TicketID, $Message)
+{
+    require 'dbconfig.php';
+
+    $insertQuery = "INSERT INTO notification (login_id, ticket_id, msg, view) VALUES (".$LoginID.", ".$TicketID.", '".$Message."', 0) ";   
+    //var_dump($insertQuery);die();
+    $mysqli->query($insertQuery);
+}
+
+
+function get_login_id_by_agent_id($AgentID)
+{
+    require 'dbconfig.php';
+
+    $query = "SELECT id  FROM agent_login WHERE agent_id=".$AgentID;
+    error_log("your Query:".$query);
+    $result = $mysqli->query($query);
+    $returnData = "";
+
+    // Check if any rows were returned
+    if ($result->num_rows > 0) {        
+        // Fetch each row and add it to the data array
+        if ($row = $result->fetch_assoc()) {
+            $returnData = $row["id"];
+        }       
+    }
+    return $returnData;
+
+}
+
+
+
+
+
+
+
 
 function getAgentNameById($AgentID)
 {
@@ -205,8 +259,8 @@ function getWorkStatusById($StatusID)
 function upload_ticket_file($TicketID)
 {
     require 'dbconfig.php';
-
-    $uploadDirectory = '/home1/icsweho2/public_html/ContactManager/ticket_uploads/';
+    
+    $uploadDirectory = $_SESSION['WD'].'/ticket_uploads/';
 
     if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] === UPLOAD_ERR_OK) {
         $tempFilePath = $_FILES['attachment']['tmp_name'];

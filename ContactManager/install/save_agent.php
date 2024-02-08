@@ -1,5 +1,4 @@
 <?php
-session_start();
 // Validate required fields
 $requiredFields = array(
   'person_name',
@@ -49,7 +48,7 @@ $agent_type = $_POST['agent_type'];
 
 
 
-//$isAdmin = isset($_POST['is_admin']) ? 1 : 0;
+$isAdmin = isset($_POST['is_admin']) ? 1 : 0;
 
 /*
 if(!empty($photo))
@@ -156,16 +155,14 @@ if (!empty($_POST['id'])) {
     $userId = $_POST['user_id'];
     $password = $_POST['password'];
     //$isAdmin = isset($_POST['is_admin']) ? 0 : 1;// admin 0, agent 1
-    //$isAdmin = isset($_POST['is_admin']) ? 1 : 0;
+    $isAdmin = isset($_POST['is_admin']) ? 1 : 0;
 
     $updateAgentLoginQuery = "UPDATE agent_login SET user_id = '$userId', password = '$password', is_admin = $isAdmin , agent_type = $agent_type WHERE agent_id = $agentId";
     
 
     if(!empty($photo))
     {
-      ///home1/icsweho2/public_html/icsticket/agent_uploads/
-
-      $uploadDirectory = $_SESSION['WD'].'/agent_uploads/';
+      $uploadDirectory = '/home1/icsweho2/public_html/ContactManager/agent_uploads/';
       $imageName = $agentId.".jpg";
       $filePath = $uploadDirectory.$agentId.".jpg";
       if(file_exists($filePath)) 
@@ -220,6 +217,8 @@ if (!empty($_POST['id'])) {
     
     $agentId = $stmt->insert_id;$stmt->close();
     
+
+    /*
     $commaSeparatedIds = explode(',', $reportingTo);
 
     foreach ($commaSeparatedIds as $reportingId) {
@@ -227,20 +226,21 @@ if (!empty($_POST['id'])) {
       $stmt->bind_param("ii",$agentId, $reportingId);
       $stmt->execute();$stmt->close();
     }
-    
+
+    */
+    $isAdmin = 0;
     $stmt = $mysqli->prepare("INSERT INTO agent_login (agent_id,user_id, password, is_admin, agent_type) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param("sssii",$agentId,$userId, $password, $isAdmin, $agent_type);
     $stmt->execute();$stmt->close();
     
     $stmt = $mysqli->prepare("INSERT INTO agent_notification (agent_id, email, whatsapp_no, mobile_no, smtp, email_pasword, port) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("isssss", $agentId, $email, $whatsappNo, $mobileNo, $smtp, $emailPassword, $port);
+    $stmt->bind_param("isssssi", $agentId, $email, $whatsappNo, $mobileNo, $smtp, $emailPassword, $port);
     $stmt->execute();$stmt->close();
 
 
     if(!empty($photo))
     {
-      //$uploadDirectory = '/home1/icsweho2/public_html/ContactManager/agent_uploads/';
-      $uploadDirectory = $_SESSION['WD'].'/agent_uploads/';
+      $uploadDirectory = '/home1/icsweho2/public_html/ContactManager/agent_uploads/';
       $imageName = $agentId.".jpg";
       $filePath = $uploadDirectory.$agentId.".jpg";
       if(file_exists($filePath)) 

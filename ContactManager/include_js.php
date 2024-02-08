@@ -55,3 +55,15 @@
 <script src="plugins/select2/js/select2.full.min.js"></script>
 <!-- Stepper -->
 <script src="plugins/bs-stepper/js/bs-stepper.min.js"></script>
+
+<script>
+    // Add a click event handler for the "Settings" dropdown item
+    document.getElementById("settingsDropdown").addEventListener("click", function (event) {
+        // Prevent the default behavior (closing the dropdown)
+        event.preventDefault();
+
+        // Toggle the visibility of the submenu
+        const submenu = document.getElementById("settingsSubmenu");
+        submenu.style.display = submenu.style.display === "block" ? "none" : "block";
+    });
+</script>

@@ -145,11 +145,11 @@ require_once "redirect.php";
                                         
                                         
 
-                                        echo '<tr>';
+                                        echo '<tr onclick="get_company('.$row['id'].')">';
                                         echo '<td>' . $index . '</td>';
                                         echo '<td>' . $row['name'] . '</td>';
                                         echo '<td>' . $statusName . '</td>';
-                                        echo '<td><i class="fas fa-edit" onclick="get_company('.$row['id'].')"></i><i class="fas fa-trash" onclick="deleteCompany('.$row['id'].')"></i></td>';
+                                        echo '<td><i class="fas fa-trash" onclick="deleteCompany('.$row['id'].')"></i></td>';
                                         echo '</tr>';
                                   $index++;
                                     }

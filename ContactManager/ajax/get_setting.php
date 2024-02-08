@@ -2,7 +2,7 @@
 // Include the database configuration file
 require_once 'dbconfig.php';
 
-$query = "SELECT * FROM settings WHERE id = 1";
+$query = "SELECT *, IF((SELECT ticket_id FROM ticket WHERE ticket_id=settings.default_start_ticket_no), 1, 0) AS used_no FROM settings WHERE id = 1";
 $result = $mysqli->query($query);
 // Check if any rows were returned
 if ($result->num_rows > 0) {

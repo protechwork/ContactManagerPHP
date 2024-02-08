@@ -162,7 +162,13 @@ require_once "redirect.php";
           console.log(response);          
 
           $("#default_work_status").val(setting_data.default_work_status);
-          $("#start_ticket_no").val(setting_data.default_start_ticket_no);        
+          $("#start_ticket_no").val(setting_data.default_start_ticket_no); 
+          if(setting_data.used_no == 1)
+          {
+            $("#start_ticket_no").prop("disabled", true);  
+          }
+          
+          
         },
         error: function() {
           // Display error message

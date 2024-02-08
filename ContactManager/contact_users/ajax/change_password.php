@@ -2,46 +2,28 @@
 session_start();
 // Include the database configuration file
 require_once 'dbconfig.php';
-
 // Get the form data
-
-
-$comment =  $_POST['comment'];
-$visibility =  $_POST['visibility'];
-
+$password =  $_POST['new_pass'];
 $userID = $_SESSION['user_id'];
 
 // Check if the data is not blank
-if (!empty($comment) )
-{
-    
-	$ticketID="0";
-    if(!empty($_POST['ticket_id']))
-    {
-        $ticketID=$_POST['ticket_id'];
-    }
-    
+if (!empty($password) )
+{	
     // Insert a new record
-    $insertQuery = "INSERT INTO ticket_activity (ticket_id, perfomed_user_id, comment, visibility, datetime, type) VALUES (".$ticketID.", ".$userID.", '".$comment."', ".$visibility.", now(), 3 ) ";   
-    //var_dump($insertQuery);die();
+    $insertQuery = "UPDATE agent_login SET password='".$password."' WHERE id=".$userID;   
     $mysqli->query($insertQuery);
-    
-    
 
     // Return a success response
     $response = array('status' => 'success');
     echo json_encode($response);
-    
-	
+    //echo "password updated successfully";
   
 } else {
   // Return an error response
   $response = array('status' => 'error');
   echo json_encode($response);
+  //cho "Error";
 }
-
 // Close the database connection
 $mysqli->close();
-
-
 ?>

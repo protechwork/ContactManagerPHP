@@ -1,4 +1,5 @@
 <?php
+    session_start();
     // Include the database configuration file
     require_once 'ajax/dbconfig.php';
     
@@ -15,6 +16,18 @@
         $row = $result->fetch_assoc();
         $file_name = $row['file_name'];
     } 
+
+    $query = "SELECT * FROM agent_login WHERE id = ".$_SESSION['user_id'];
+    $result = $mysqli->query($query);
+    $loginUserName = '';
+    
+    if(mysqli_num_rows($result) > 0)
+    {
+        $row = $result->fetch_assoc();
+        $loginUserName = $row['user_id'];
+    } 
+
+
 ?>
     
   <!-- Navbar -->
@@ -37,10 +50,103 @@
       
     </ul>
 
+    <?php
+          // Include the database configuration file
+          require_once 'ajax/dbconfig.php';         
+          
+          $userID = $_SESSION['user_id'];
+
+          // Fetch all data from the email_template table
+          $query = "SELECT COUNT(id) as cnt FROM notification WHERE notification.view=0 AND login_id=".$userID;
+          $result = $mysqli->query($query);
+          $count = 0;
+          // Check if any rows were returned
+          if ($result->num_rows > 0)
+          {                        
+              while ($row = $result->fetch_assoc())
+              {     
+                $count = $row['cnt'];                                                                                                                       
+              }
+          }
+    ?>
+
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-        
-      <!-- Notifications Dropdown Menu -->
+
+
+    <li class="nav-item dropdown">
+          <a id="notification_bell" class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-bell"></i>
+          <?php
+            if($count > 0)
+            {
+
+            
+          ?>
+          <span class="badge badge-danger navbar-badge"><?=$count?><!--<?=$_SESSION['user_id']?>--></span>
+
+          <?php
+            }
+          ?>
+          </a>
+          <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+              <span class="dropdown-item dropdown-header">Notifications</span>
+
+              <?php
+                    // Include the database configuration file
+                    require_once 'ajax/dbconfig.php';         
+                    
+                    $userID = $_SESSION['user_id'];
+                    $userType = $_SESSION['user_type'];
+                    $query = "SELECT * FROM notification WHERE view=0 AND login_id=".$userID;
+
+                    /*
+                    if($userType == 0) //admin
+                    {
+                      $query = "SELECT * FROM notification WHERE view=0 AND login_id IN (SELECT id FROM agent_login WHERE is_admin=0)";
+                    }
+                    else
+                    {
+                      $query = "SELECT * FROM notification WHERE view=0 AND login_id=".$userID;
+                    }
+                    */
+
+                    
+                    
+                    
+                    $result = $mysqli->query($query);
+
+                    // Check if any rows were returned
+                    if ($result->num_rows > 0)
+                    {                        
+                        while ($row = $result->fetch_assoc())
+                        {                                                                               
+                          ?>
+                              <div class="dropdown-divider"></div>
+                              <a href="ticket.php?notification_id=<?=$row['id']?>" class="dropdown-item">
+                                <i class="fas fa-comments mr-2"></i> <?=$row['msg']?>           
+                              </a> 
+                          <?php                                                
+                        }
+                    }
+                    
+              ?>
+
+                      
+              
+              
+
+
+
+
+              <!--<div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+              -->
+          </div>
+
+        </li>
+
+      <!-- User Dropdown Menu -->
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-user"></i>
@@ -48,7 +154,7 @@
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <a href="#" class="dropdown-item">
-            <i class="fas fa-user mr-2"></i>Profile
+            <i class="fas fa-user mr-2"></i><?=$loginUserName?>
           </a>
           <div class="dropdown-divider"></div>
           <a href="login.php" class="dropdown-item">
@@ -78,9 +184,13 @@
           <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
         </div>
         -->
-        
-        
       </li>
+
+
+
+
+
+
      
      
     </ul>
@@ -124,6 +234,11 @@
             
               
         <li class="nav-item">
+
+          <?php
+              if($_SESSION['user_type'] == 0) //admin user
+              {
+?>
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-book"></i>
               <p>
@@ -152,7 +267,7 @@
               </li>
               <li class="nav-item">
                 <a href="projects.php" class="nav-link">
-                  <i class="far fa-calendar-alt nav-icon"></i>
+                  <i class="far fa-circle nav-icon"></i>
                   <p>Project Master</p>
                 </a>
               </li>
@@ -177,10 +292,184 @@
 		  
 		  <li class="nav-item">
             <a href="ticket.php" class="nav-link">
-              <i class="far fa-user nav-icon"></i>
+              <i class="far fa-comments nav-icon"></i>
               <p>Ticket</p>
             </a>
           </li>
+
+          
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>
+                Reports
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+
+              <li class="nav-item">
+                <a href="report_all.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>All Report</p>
+                </a>
+              </li>
+
+
+              <li class="nav-item">
+                <a href="report1.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Close</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="report2.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Hold</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="report3.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>In Progress</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="report4.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Not Started</p>
+                </a>
+              </li>
+              
+              <li class="nav-item">
+                <a href="report_not_resolved.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Not Resolved</p>
+                </a>
+              </li>
+
+              
+
+            </ul>
+          </li>
+<?php
+              }
+              else
+              {
+?>
+                  <li class="nav-item">
+                    <a href="ticket.php" class="nav-link">
+                      <i class="far fa-comments nav-icon"></i>
+                      <p>Ticket</p>
+                    </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon fas fa-chart-bar"></i>
+                      <p>
+                        Reports
+                        <i class="fas fa-angle-left right"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                      <li class="nav-item">
+                        <a href="report1.php" class="nav-link">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Close</p>
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a href="report2.php" class="nav-link">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Hold</p>
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a href="report3.php" class="nav-link">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>In Progress</p>
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a href="report4.php" class="nav-link">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Not Started</p>
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a href="report_not_resolved.php" class="nav-link">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Not Resolved</p>
+                        </a>
+                      </li>
+
+
+
+                    </ul>
+                  </li>
+
+          
+<!--
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>
+                Reports
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="report1.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Close</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="report2.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Hold</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="report3.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>In Progress</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="report4.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Not Started</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+              -->
+
+
+<?php
+              }
+          ?>
+
+            
+
+
+
+
+
           
            <!--
            <li class="nav-item">

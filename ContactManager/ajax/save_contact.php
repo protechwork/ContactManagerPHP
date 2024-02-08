@@ -21,6 +21,7 @@ $dob = $_POST['dob'];
 
 $userName = $_POST['user_name'];
 $userPass = $_POST['user_pass'];
+$userType = $_POST['user_type'];
 
 //var_dump($display_image);die();
 
@@ -49,7 +50,8 @@ if (!empty($company_id) && !empty($contact_name) && !empty($email_id) && !empty(
 
     if(!empty($display_image))
     {
-      $uploadDirectory = '/home1/icsweho2/public_html/ContactManager/contact_uploads/';
+      //$uploadDirectory = '/home1/icsweho2/public_html/ContactManager/contact_uploads/';
+      $uploadDirectory = getcwd().'/../contact_uploads/';
       $imageName = $newContactID.".jpg";
       $filePath = $uploadDirectory.$contact_id.".jpg";
       if(file_exists($filePath)) 
@@ -71,12 +73,13 @@ if (!empty($company_id) && !empty($contact_name) && !empty($email_id) && !empty(
 
 
     
-    $updateQuery = "UPDATE agent_login SET user_id='$userName', password='$userPass' WHERE contact_id=".$contact_id;
+    $updateQuery = "UPDATE agent_login SET user_id='$userName', password='$userPass', is_admin=$userType WHERE contact_id=".$contact_id;
     $mysqli->query($updateQuery);
   } else {
     // Insert a new record
     //echo "inserting";die();
     
+    /*
     $query = "SELECT COUNT(*) as count FROM contacts WHERE email_id='$email_id' OR mobile_no='$mobile_no' ";
     $result = $mysqli->query($query);
     $row = $result->fetch_assoc();
@@ -87,6 +90,7 @@ if (!empty($company_id) && !empty($contact_name) && !empty($email_id) && !empty(
         echo json_encode($response);
         die();
     }
+    */
   
   
   
@@ -113,7 +117,7 @@ if (!empty($company_id) && !empty($contact_name) && !empty($email_id) && !empty(
 
     
     
-    $insertQuery = "INSERT INTO agent_login (contact_id, user_id, password, is_admin) VALUES ($newContactID, '$userName', '$userPass', 2)";
+    $insertQuery = "INSERT INTO agent_login (contact_id, user_id, password, is_admin) VALUES ($newContactID, '$userName', '$userPass', $userType)";
     $mysqli->query($insertQuery);
   }
 

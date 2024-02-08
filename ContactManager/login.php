@@ -8,7 +8,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Contact Manager | Log in</title>
-
+  <link rel="icon" href="https://www.icsweb.in/image/ICS%20ICON.png">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
@@ -74,6 +74,13 @@
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.min.js"></script>
 <script>
+
+    $("#password").keypress(function(e) {
+        if(e.which == 13) {
+          login();
+        }
+    });
+
     function login()
     {
         // Send the AJAX request

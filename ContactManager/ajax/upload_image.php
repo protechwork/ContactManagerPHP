@@ -1,9 +1,10 @@
 <?php
+session_start();
 // Include the database configuration file
 require_once 'dbconfig.php';
 
 
-$uploadDirectory = '/home1/icsweho2/public_html/ContactManager/uploads/';
+$uploadDirectory = getcwd().'/../uploads/';
 
 // Handle image upload
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -30,14 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mysqli->query($insertQuery);
               }
             
-            header("Location: https://icsweb.in/ContactManager/settings.php?msg=Success");
+            header("Location: ".$_SESSION['base_url']."/settings.php?msg=Success");
             die();
         } else {
-            header("Location: https://icsweb.in/ContactManager/settings.php?msg=Failed");
+            header("Location: ".$_SESSION['base_url']."/settings.php?msg=Failed");
             die();
         }
     } else {
-        header("Location: https://icsweb.in/ContactManager/settings.php?msg=Failed");
+        header("Location: ".$_SESSION['base_url']."/settings.php?msg=Failed");
         die();
     }
 }

@@ -52,7 +52,7 @@ require_once "redirect.php";
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Ticket Creation</h1>
+            <h1>Closed Ticket</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -174,7 +174,7 @@ require_once "redirect.php";
 								<div class="col-md-4">
                                     <div class="form-group">
                                         <label for="Company">Select Company</label><span style="color:red;">*</span>
-                                        <select class="form-control select2" id="company_id" name="company_id" required>
+                                        <select class="form-control" id="company_id" name="company_id" required>
                                             <option value="">Select Company</option>
                                             <?php
                                                     // Include the database configuration file
@@ -182,7 +182,7 @@ require_once "redirect.php";
                                                     $columnList= array();
         
                                                     // Fetch all data from the email_template table
-                                                    $query = "SELECT companies.* FROM companies ORDER BY companies.name";
+                                                    $query = "SELECT companies.* FROM companies";
                                                     $result = $mysqli->query($query);
         
                                                     // Check if any rows were returned
@@ -264,7 +264,7 @@ require_once "redirect.php";
                               <?php
                                   require_once 'ajax/dbconfig.php';
 
-                                  $query = "SELECT * FROM agent_master ORDER BY name";
+                                  $query = "SELECT * FROM agent_master";
                                   $result = $mysqli->query($query);
 
                                   // Check if any rows were returned
@@ -292,24 +292,23 @@ require_once "redirect.php";
                                   require_once 'ajax/dbconfig.php';
 
 
-                                  $query = "SELECT * FROM agent_master ORDER BY name";
+                                  $query = "SELECT * FROM agent_master";
                                   
 
                                   error_log("Current User Type:".$user_type);
 
                                   if($user_type == 0) //admin
                                   {
-                                    $query = "SELECT * FROM agent_master ORDER BY name";
+                                    $query = "SELECT * FROM agent_master";
                                   }
                                   else if($user_type == 1) // agent
                                   {
                                     //$query = "SELECT * FROM agent_master WHERE id IN (SELECT reporting_to_id FROM agent_reporting_to WHERE agent_id=".$user_id.")";
-                                    //$query = "SELECT * FROM agent_master WHERE id IN (SELECT agent_id  FROM agent_reporting_to WHERE reporting_to_id=".$user_id.") ORDER BY name";
-                                    $query = "SELECT * FROM agent_master WHERE id IN ((SELECT agent_id  FROM agent_reporting_to WHERE reporting_to_id=".$user_id."), ".$user_id.") ORDER BY name";
+                                    $query = "SELECT * FROM agent_master WHERE id IN (SELECT agent_id  FROM agent_reporting_to WHERE reporting_to_id=".$user_id.")";
                                   }
                                   else
                                   {
-                                    $query = "SELECT * FROM agent_master ORDER BY name";
+                                    $query = "SELECT * FROM agent_master";
                                   }
 
                                   error_log("Query To Fetch Data:".$query);
@@ -413,16 +412,23 @@ require_once "redirect.php";
           <div class="col-12">
             <div class="card card-<?=$card_color?>">
               <div class="card-header">
-                <h3 class="card-title">Ticket List</h3>
-                <button type="button" class="btn btn-primary add-btn" data-toggle="modal" data-target="#modal-lg" style="float: right;margin: 0;padding: 0;background-color: white;color: black;width: 10%;">Add</button>                
+                <h3 class="card-title">Titcket List</h3>    
+                <button type="button" class="btn btn-primary add-btn" data-toggle="modal" data-target="#modal-lg" style="float: right;margin: 0;padding: 0;background-color: white;color: black;width: 10%;visibility: hidden;">Add</button>            
               </div>
               <!-- /.card-header -->
               <div class="card-body">
+                <div>
+                    <lable>From Date:</lable>
+                    <input id="from_date"  type="date" />
+                    <lable>To Date:</lable>
+                    <input id="to_date"type="date" />
+                    <input id="search"type="button" value="Serach" class="btn btn-primary" />
+                </div>
                 <table id="company_table" class="table table-bordered table-striped">
                         <thead>
                             <tr>                                
                                 <th>Ticket No</th>
-                                <th>Created Date-<br>Created By</th>
+                                <th>Created Date</th>
                                 <th>Company-<br>Project</th>
                                 <!--<th>Project Name</th>-->
                                
@@ -466,9 +472,6 @@ require_once "redirect.php";
                                   ELSE 'Active'
                                 END Status,
                                   DATE_FORMAT(tkt.reported_on, '%d-%m-%Y %h:%i ') ReportedOn, 
-                                
-                                IFNULL(cont.display_name, log.user_id) UserName,
-                                                                 
                                   tkt.reported_by ReportedBy, 
                                   tkt.attachement 
                                 FROM 
@@ -478,29 +481,19 @@ require_once "redirect.php";
                                   LEFT JOIN agent_master assgnby ON tkt.assigned_by = assgnby.id
                                   LEFT JOIN agent_master assgnto ON tkt.assigned_to = assgnto.id
                                   LEFT JOIN work_status_master wstatus ON tkt.work_status = wstatus.id
-                                  LEFT JOIN agent_login log ON tkt.reported_by=log.id
-                                  LEFT JOIN contacts cont ON cont.contact_id=log.contact_id";
-
-                                if($user_type == 1)
-                                {
-                                  $query = $query." WHERE tkt.assigned_to=".$user_id;
-                                }
+                                WHERE wstatus.link_status=1
+                                ORDER BY tkt.reported_on DESC";
                                 $result = $mysqli->query($query);
 
                                 // Check if any rows were returned
                                 if ($result->num_rows > 0) {
                                     // Loop through each row and output the data in <tbody>
                                   $index=1;
-                                    while ($row = $result->fetch_assoc()) {    
-                                        if($row['link_status'] == "Close")
-                                        {
-                                          continue;
-                                        }                                          
+                                    while ($row = $result->fetch_assoc()) {                                              
                                         echo '<tr onclick="get_company('.$row['ticket_id'].')">';
                                         //echo '<td>' . $index . '</td>';  
                                         echo '<td>' . $row['ticket_id'] . '</td>';   
-                                        //echo '<td>' . $row['ReportedOn'].' </td>';                       
-                                        echo '<td>' . $row['ReportedOn']."-<br>".$row['UserName'] . ' </td>';                       
+                                        echo '<td>' . $row['ReportedOn'] . '</td>';                       
                                         echo '<td>' . $row['CompanyName'] ."-<br>". $row['ProjectName'] . '</td>';
                                         //echo '<td>' . $row['ProjectName'] . '</td>';
                                         
@@ -586,8 +579,6 @@ require_once "redirect.php";
         }*/
    ]
     }).buttons().container().appendTo('#company_table_wrapper .col-md-6:eq(0)');
-
-    $('.select2').select2()
     
   });
   
@@ -604,6 +595,76 @@ require_once "redirect.php";
   var ticket_id = "";
   var global_contact_id = "";
   var global_project_id = "";
+
+
+  document.getElementById('from_date').valueAsDate = new Date();
+  document.getElementById('to_date').valueAsDate = new Date();
+
+
+  $("#search").click(function(){   
+
+    $('#company_table').DataTable().destroy();
+
+    $.ajax({
+        type: "POST",
+        url: "ajax/get_all_ticket.php",
+        data: {
+          from_date:$("#from_date").val(),
+          to_date:$("#to_date").val(),
+          status:1
+        },
+        dataType: "json",
+        success: function(response) {      
+          $("#categoryTableBody").html("");
+
+
+          //var data = JSON.parse(response);
+          var data = response;
+          data.forEach(function (ticketData, index) {                                                           
+              var td = "";
+              td = td + "<td>" + ticketData.ticket_id + "</td>";
+              td = td + "<td>" + ticketData.ReportedOn + "</td>";
+              td = td + "<td>" + ticketData.CompanyName + "-<br>" + ticketData.ProjectName + "</td>";              
+              td = td + "<td title='" + ticketData.details + "'>" + ticketData.Title + "</td>";              
+              td = td + "<td>" + ticketData.assign_by + "-<br>" + ticketData.assign_to + "</td>";  
+              td = td + "<td>" + ticketData.WorkStatus + "-<br>" + ticketData.link_status + "</td>";     
+
+              if(ticketData.attachement != '')
+              {
+                td = td + "<td><a target='_blank' href='<?=$_SESSION['base_url']?>/ticket_uploads/"+ticketData.attachement+"'>Download</a></td>";
+              }
+              else
+              {
+                td = td + "<td></td>";
+              }
+
+              $("#categoryTableBody").append("<tr onclick='get_company(" + ticketData.ticket_id + ")'>" + td + "</tr>");
+          });
+          
+        }
+      });
+
+    $("#company_table").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false, 
+      
+      "bAutoWidth": false, // Disable the auto width calculation 
+        "aoColumns": [
+          { "sWidth": "10%" }, // 1st column width 
+          { "sWidth": "10%" }, // 1st column width 
+          { "sWidth": "10%" }, // 3rd column width and so on 
+          { "sWidth": "10%" }, // 3rd column width and so on 
+          { "sWidth": "10%" }, // 3rd column width and so on 
+          { "sWidth": "10%" }, // 3rd column width and so on 
+          { "sWidth": "10%" }, // 3rd column width and so on 
+        ],
+
+        order: [[0, 'desc']],
+
+      "buttons": ["excel", "pdf", "colvis"
+    ]
+    }).buttons().container().appendTo('#company_table_wrapper .col-md-6:eq(0)');
+
+});
 
   $("#company_id").change(function()
   {    
@@ -654,7 +715,7 @@ require_once "redirect.php";
          
 
           $.each(response, function(key, value){
-            contactOptions = contactOptions + "<option title='Mobile No:"+value.mobile_no+"' value=" + value.contact_id  + ">" + value.name + "</option>";               
+            contactOptions = contactOptions + "<option value=" + value.contact_id  + ">" + value.name + "</option>";               
           });
 
           $("#contact_ids").html(contactOptions);
@@ -969,11 +1030,6 @@ require_once "redirect.php";
                   $("#project_id").val(company_data.project_id);
                   $("#title").val(company_data.title);
                   $("#details").val(company_data.details);
-                  
-                  
-                  //$("#contact_ids").trigger('change');
-                  //$("#contact_ids").val(company_data.contact_selected);
-                  
 
                   /*$("#company_id").trigger('change');
                   $("#contact_ids").val(company_data.contact_ids);                  
@@ -987,7 +1043,6 @@ require_once "redirect.php";
 
                   //$("#contact_ids").val(company_data.contact_ids);
                   global_contact_id=company_data.contact_ids;
-                  //global_contact_id=company_data.contact_selected;
                   global_project_id=company_data.project_id;
                   //$("#contact_ids").val(company_data.contact_ids).change();
                   //$("#contact_ids").val(company_data.contact_ids).change();
@@ -1115,20 +1170,28 @@ require_once "redirect.php";
 
         }
 
-        function update_notification(NotificationID)
+        function deleteCompany(ID)
         {
             // Send the AJAX request
             $.ajax({
                 type: "POST",
-                url: "ajax/update_notification.php",
+                url: "ajax/delete_project.php",
                 data: {
-                  notification_id:NotificationID
+                  id:ID
                 },
                 dataType: "json",
                 success: function(response) {
                   // Handle the response from the server
-                  if (response.status === "success") {                   
-                    console.log("notification updated successful ticket id:" + NotificationID);                    
+                  if (response.status === "success") {
+                    // Display success message
+                    alert("Database updated successfully.");
+                    location.reload(true);
+                  }else if (response.status === "exist") {
+                    // Display success message
+                    alert("Record Already Found in Contact.");
+                  } else {
+                    // Display error message
+                    alert("Failed to update Database.");
                   }
                 },
                 error: function() {
@@ -1137,67 +1200,6 @@ require_once "redirect.php";
                 }
               });
         }
-
-
-        function getParams ()
-        {
-            var result = {};
-            var tmp = [];
-        
-            location.search
-                .substr (1)
-                .split ("&")
-                .forEach (function (item)
-                {
-                    tmp = item.split ("=");
-                    result [tmp[0]] = decodeURIComponent (tmp[1]);
-                });
-        
-            return result;
-        }
-        
-        location.getParams = getParams;
-        
-        console.log (location.getParams());
-        console.log (location.getParams()["ticket_id"]);
-
-        var notificationID = location.getParams()["notification_id"];
-        if(notificationID != undefined)
-        {
-          $.ajax({
-                type: "POST",
-                url: "ajax/get_notification_by_id.php",
-                data: {
-                  notification_id:notificationID,
-                },
-                dataType: "json",
-                success: function(response) {                  
-                  var notificationData = response;
-                 var ticketID = notificationData[0].ticket_id;
-
-                 get_company(ticketID);
-                 update_notification(notificationID);
-                  
-                    
-                },
-                error: function() {
-                  console.log("Error fount in notification");
-                }
-              });
-        }
-
-        /*
-        if(location.getParams()["ticket_id"] != undefined)
-        {
-            //alert(location.getParams()["ticket_id"]);
-            var TicketID = location.getParams()["ticket_id"];
-            get_company(location.getParams()["ticket_id"]);
-            update_notification(TicketID);
-        }
-        */
-    
-
-
 </script>
 </body>
 </html>

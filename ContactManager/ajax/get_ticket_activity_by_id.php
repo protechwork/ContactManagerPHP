@@ -4,7 +4,7 @@ require_once 'dbconfig.php';
 
 $id = $_POST['ticket_id'];
 
-$query = "SELECT DATE_FORMAT(datetime, '%d/%m/%Y %H:%i') as datetime,ticket_id,agent_login.user_id as user_name,IF(visibility = 0, 'No', 'Yes') as notify_contact,comment FROM ticket_activity INNER JOIN agent_login ON agent_login.id=ticket_activity.perfomed_user_id WHERE ticket_id=".$id. " ORDER BY datetime DESC";
+$query = "SELECT DATE_FORMAT(datetime, '%d/%m/%Y %H:%i') as datetime,ticket_id,agent_login.user_id as user_name,IF(visibility = 0, 'No', 'Yes') as notify_contact,comment, ticket_activity.type FROM ticket_activity INNER JOIN agent_login ON agent_login.id=ticket_activity.perfomed_user_id WHERE ticket_id=".$id. " ORDER BY datetime DESC";
 $result = $mysqli->query($query);
 
 // Check if any rows were returned

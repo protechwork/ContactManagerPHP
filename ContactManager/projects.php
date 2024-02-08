@@ -238,13 +238,13 @@ require_once "redirect.php";
                                     // Loop through each row and output the data in <tbody>
                                   $index=1;
                                     while ($row = $result->fetch_assoc()) {                                              
-                                        echo '<tr>';
+                                        echo '<tr onclick="get_company('.$row['id'].')">';
                                         echo '<td>' . $index . '</td>';
                                         echo '<td>' . $row['project_name'] . '</td>';
                                         echo '<td>' . $row['company_name'] . '</td>';
                                         echo '<td>' . $row['type_name'] . '</td>';
                                         echo '<td>' . $row['status_name'] . '</td>';
-                                        echo '<td><i class="fas fa-edit" onclick="get_company('.$row['id'].')"></i><i class="fas fa-trash" onclick="deleteCompany('.$row['id'].')"></i></td>';
+                                        echo '<td><i class="fas fa-trash" onclick="deleteCompany('.$row['id'].')"></i></td>';
                                         echo '</tr>';
                                   $index++;
                                     }

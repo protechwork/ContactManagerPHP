@@ -66,10 +66,12 @@ if (!empty($project_id) && !empty($company_id) && !empty($title) && !empty($deta
           $result = $mysqli->query($query);
           $row = $result->fetch_assoc();
           $defaultWorkStatus = $row['work_status'];
+
+          $contactDetails = getUserNameById($userID);
           
         
            // Insert a new record
-           $insertQuery = "INSERT INTO ticket (company_id, project_id, title, details, attachement, reported_on, reported_by, work_status, status) VALUES (".$company_id.", ".$project_id.", '".$title."', '".$details."', '', now(), ".$userID.", ".$defaultWorkStatus.", 0) ";   
+           $insertQuery = "INSERT INTO ticket (company_id, project_id, title, details, attachement, reported_on, reported_by, work_status, status, contact_ids) VALUES (".$company_id.", ".$project_id.", '".$title."', '".$details."', '', now(), ".$userID.", ".$defaultWorkStatus.", 0, '".$contactDetails["contact_id"]."') ";   
            //var_dump($insertQuery);die();
            $mysqli->query($insertQuery);
            
@@ -81,15 +83,23 @@ if (!empty($project_id) && !empty($company_id) && !empty($title) && !empty($deta
            //$mysqli->insert_id
 
            $newTicketId = $mysqli->insert_id;
-           $comment =  "New Ticket Created By: ".getUserNameById($userID);    
+           //$contactDetails = getUserNameById($userID);
+           $personName = $contactDetails["contact_person"];
+           $companyName = $contactDetails["company_name"];
+
+
+           $comment =  "New Ticket Created By: ".$contactDetails["company_name"]."-".$contactDetails["contact_person"];    
            $visibility = 0;
+
+
+           add_admin_notification($newTicketId, "New Ticket:".$contactDetails["company_name"]."-".$contactDetails["contact_person"]);
           
    
            $insertQuery = "INSERT INTO ticket_activity (ticket_id, perfomed_user_id, comment, visibility, datetime) VALUES (".$newTicketId.", ".$userID.", '".$comment."', ".$visibility.", now() ) ";           
            $mysqli->query($insertQuery);
         
           // Return a success response
-          $response = array('status' => 'success');
+          $response = array('status' => 'success', 'msg' => 'Ticket Created:'.$newTicketId);
           echo json_encode($response);
     }
 	
@@ -102,6 +112,27 @@ if (!empty($project_id) && !empty($company_id) && !empty($title) && !empty($deta
 
 // Close the database connection
 $mysqli->close();
+
+function add_admin_notification($TicketID, $Message)
+{
+    require 'dbconfig.php';
+
+    $query = "SELECT * FROM agent_login WHERE is_admin=0 LIMIT 0, 1";
+    $result = $mysqli->query($query);
+    $adminID = "";
+
+    // Check if any rows were returned
+    if ($result->num_rows > 0) {        
+        // Fetch each row and add it to the data array
+        if ($row = $result->fetch_assoc()) {
+            $adminID = $row["id"];
+        }       
+    }
+
+    $insertQuery = "INSERT INTO notification (login_id, ticket_id, msg, view) VALUES (".$adminID.", ".$TicketID.", '".$Message."', 0) ";   
+    //var_dump($insertQuery);die();
+    $mysqli->query($insertQuery);
+}
 
 function getAgentNameById($AgentID)
 {
@@ -126,15 +157,20 @@ function getUserNameById($ID)
 {
     require 'dbconfig.php';
 
-    $query = "SELECT user_id FROM agent_login WHERE id=".$ID;
+    $query = "SELECT contacts.contact_id, contacts.name AS contact_person,  companies.name AS company_name
+            FROM agent_login INNER JOIN contacts ON  agent_login.contact_id=contacts.contact_id
+            INNER JOIN companies ON companies.company_id=contacts.company_id
+            WHERE agent_login.id=".$ID;
     $result = $mysqli->query($query);
-    $returnData = "";
+    $returnData = array();
 
     // Check if any rows were returned
     if ($result->num_rows > 0) {        
         // Fetch each row and add it to the data array
         if ($row = $result->fetch_assoc()) {
-            $returnData = $row["user_id"];
+            $returnData["contact_person"] = $row["contact_person"];
+            $returnData["company_name"] = $row["company_name"];
+            $returnData["contact_id"] = $row["contact_id"];
         }       
     }
     return $returnData;
@@ -163,8 +199,9 @@ function getWorkStatusById($StatusID)
 function upload_ticket_file($TicketID)
 {
     require 'dbconfig.php';
-
-    $uploadDirectory = '/home1/icsweho2/public_html/ContactManager/ticket_uploads/';
+    
+    //$uploadDirectory = '/home1/icsweho2/public_html/ContactManager/ticket_uploads/';
+    $uploadDirectory = $_SESSION['WD'].'/ticket_uploads/';
 
     if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] === UPLOAD_ERR_OK) {
         $tempFilePath = $_FILES['attachment']['tmp_name'];

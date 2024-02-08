@@ -112,10 +112,15 @@ require_once "redirect.php";
 
                                             <div class="col-sm-6">                                               
                                                 <label>Is Admin</label>
-                                                <div class="form-check">
+                                                <!--<div class="form-check">
                                                     <input type="checkbox" class="form-check-input" id="is_admin">
                                                     <label class="form-check-label" for="exampleCheck2">Is Admin</label>
                                                 </div>
+                                                -->
+                                                <select class="form-control select2" id="is_admin" name="is_admin" required>                                                  
+                                                    <option value="0">Admin</option>
+                                                    <option value="1">Agent</option>                                                    
+                                                </select>
                                             </div>
                                         </div>
                                         <button class="btn btn-primary" onclick="validateLoginDetails()">Next</button>
@@ -255,8 +260,14 @@ require_once "redirect.php";
                                                       <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
                                                       </div>
-                                                      <input type="text" class="form-control" id="email_password" name="email_password" required>
+                                                      <input type="password" class="form-control" id="email_password" name="email_password" required>
                                                     </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Port</label>
+                                                    <input type="text" class="form-control" id="port" name="port" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -587,13 +598,13 @@ require_once "redirect.php";
                                     // Loop through each row and output the data in <tbody>
                                   $index=1;
                                     while ($row = $result->fetch_assoc()) {                                              
-                                        echo '<tr>';
+                                        echo '<tr onclick="GetAgent('.$row['id'].')">';
                                         echo '<td>' . $index . '</td>';
                                         echo '<td>' . $row['name'] . '</td>';
                                         echo '<td>' . $row['email'] . '</td>';
                                         echo '<td>' . $row['mobile_no'] . '</td>';
                                         //echo '<td><button class="btn btn-danger" onclick="deleteCompany('.$row['id'].')"><i class="fas fa-trash"></i></button></td>';
-                                        echo '<td><i style="margin: 0 10px;cursor: pointer;" class="fas fa-edit" onclick="GetAgent('.$row['id'].')"></i> <i style="margin: 0 10px;cursor: pointer;" class="fas fa-trash" onclick="deleteCompany('.$row['id'].')"></i></td>';
+                                        echo '<td><i style="margin: 0 10px;cursor: pointer;" class="fas fa-trash" onclick="deleteCompany('.$row['id'].')"></i></td>';
                                         echo '</tr>';
                                   $index++;
                                     }
@@ -780,6 +791,9 @@ require_once "redirect.php";
                 
                 $('#user_id').val(agentData.user_id);
                 $('#password').val(agentData.password);
+                
+                $('#is_admin').val(agentData.is_admin);
+                /*
                 $('#is_admin').prop('checked', agentData.is_admin);
 
                 $('#is_admin').prop('checked', false);
@@ -787,11 +801,13 @@ require_once "redirect.php";
                 {
                     $('#is_admin').prop('checked', true);
                 }
+                */
                 
                 $('#email').val(agentData.email);
                 $('#whatapp_no').val(agentData.whatsapp_no);
                 $('#mobile_no').val(agentData.mobile_no);
                 $('#smtp').val(agentData.smtp);
+                $('#port').val(agentData.port);
                 $('#email_password').val(agentData.email_pasword);   
                 
                 $("#agent_type").val(agentData.agent_type);
@@ -832,11 +848,13 @@ require_once "redirect.php";
             var reportingTo = $("#reporting_to").val();
             var userId = $("#user_id").val();
             var password = $("#password").val();
-            var isAdmin = $("#is_admin").is(":checked") ? 1 : 0;
+            //var isAdmin = $("#is_admin").is(":checked") ? 1 : 0;
+            var isAdmin = $("#is_admin").val();
             var email = $("#email").val();
             var whatsappNo = $("#whatapp_no").val();
             var mobileNo = $("#mobile_no").val();
             var smtp = $("#smtp").val();
+            var port = $("#port").val();
             var emailPassword = $("#email_password").val();
 
             var agentType = $("#agent_type").val();
@@ -859,11 +877,16 @@ require_once "redirect.php";
             formdata.append("whatapp_no",  whatsappNo);
             formdata.append("mobile_no",  mobileNo);
             formdata.append("smtp",  smtp);
+            formdata.append("port",  port);
             formdata.append("agent_type", agentType);
             formdata.append("email_password",  emailPassword);
             formdata.append("city",  $("#city").val());
             formdata.append("aadhar_no",  $("#aadhar").val());
             formdata.append("pan_no",  $("#pan").val());
+
+            console.log(isAdmin);
+            console.log(formdata);
+            //return;
 
 
 
