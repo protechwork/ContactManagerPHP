@@ -220,6 +220,7 @@ function send_email($EmailID, $Password, $To, $Subject, $BodyContent, $smtp, $po
   
       $mail->send();
       //echo "Email message sent.";
+      error_log("Email message sent.".$EmailID. $Password. $To. $Subject. $BodyContent. $smtp. $port);
       error_log("Email message sent.");
   } catch (Exception $e) {
     error_log("Error in sending email. Mailer Error: {$mail->ErrorInfo}");

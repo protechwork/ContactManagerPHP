@@ -1002,10 +1002,10 @@ require_once "redirect.php";
                   if(company_data.attachement != "")
                   {
                     $("#download_attachment").html('<a target="_blank" href="<?=$_SESSION['base_url']?>/ticket_uploads/'+ company_data.attachement +'">Download</a> <div>'+ext+'</div>');
-                    $("#attachment_view").hide();
+                    //$("#attachment_view").hide();
                   } else {
                     $("#download_attachment").html("");
-                    $("#attachment_view").show();
+                    //$("#attachment_view").show();
                   }                  
                   
 

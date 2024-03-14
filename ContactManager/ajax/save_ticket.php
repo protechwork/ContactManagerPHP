@@ -83,6 +83,10 @@ if (!empty($project_id) && !empty($company_id) && !empty($title) && !empty($deta
         $mysqli->query($updateQuery);
 
         
+        if(!empty($_FILES['attachment']['name']))
+        {
+            upload_ticket_file($ticketID);
+        }
 
         /*
             Update Ticket Activity
@@ -261,6 +265,8 @@ function upload_ticket_file($TicketID)
     require 'dbconfig.php';
     
     $uploadDirectory = $_SESSION['WD'].'/ticket_uploads/';
+
+    error_log($uploadDirectory);
 
     if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] === UPLOAD_ERR_OK) {
         $tempFilePath = $_FILES['attachment']['tmp_name'];
